@@ -11,7 +11,8 @@ export class ThemeService {
   private doc = inject(DOCUMENT);
   private readonly THEME_KEY = 'sih2026_portal_theme';
 
-  currentTheme = signal<AppTheme>('dark');
+  // Default to light mode
+  currentTheme = signal<AppTheme>('light');
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -24,8 +25,8 @@ export class ThemeService {
     if (saved === 'light' || saved === 'dark') {
       this.setTheme(saved);
     } else {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.setTheme(prefersDark ? 'dark' : 'dark');
+      // Default to light mode for all first-time visitors
+      this.setTheme('light');
     }
   }
 

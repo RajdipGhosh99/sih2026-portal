@@ -210,27 +210,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
         </div>
       </section>
 
-      <!-- Top 10 Spotlight (When Track Selected & Card View) -->
-      @if (psService.activePersonaId() && viewMode() === 'card') {
-        <section class="mb-4">
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <span class="badge bg-primary px-2 py-1" style="font-size: 0.75rem;">Top 10 Spotlight</span>
-            <h2 class="fs-6 fw-bold text-main m-0">Recommended for {{ getActivePersonaTitle() }}</h2>
-          </div>
 
-          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
-            @for (ps of psService.top10ForActivePersona(); track ps.ps_number) {
-              <div class="col">
-                <app-ps-card 
-                  [ps]="ps" 
-                  [searchQuery]="psService.filterState().searchQuery"
-                  (openPitch)="selectedPitchPs.set($event)"
-                ></app-ps-card>
-              </div>
-            }
-          </div>
-        </section>
-      }
 
       <!-- Main Directory Section -->
       <section>
@@ -239,7 +219,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
           <span class="text-muted small">
             Showing <strong>{{ getShowingRange() }}</strong> of <strong>{{ psService.filteredStatements().length }}</strong> challenges
             @if (psService.activePersonaId()) {
-              <span class="text-primary fw-semibold"> ({{ getActivePersonaTitle() }})</span>
+              <span>in <strong class="text-primary">{{ getActivePersonaTitle() }}</strong></span>
             }
           </span>
 
