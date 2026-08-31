@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PsDataService, ScoredProblemStatement } from '../../core/services/ps-data.service';
 import { BookmarkService } from '../../core/services/bookmark.service';
@@ -56,17 +56,23 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
         </div>
       </section>
 
-      <!-- Step 1: Responsive Track Filters -->
+      <!-- Step 1: Responsive Track Filters & Shareable Filter Bar -->
       <section class="mb-3">
         <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
           <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">
             <i class="bi bi-funnel-fill text-primary me-1"></i> Filter by Primary Track:
           </span>
-          @if (psService.activePersonaId()) {
-            <button class="btn btn-sm btn-link text-decoration-none text-primary p-0 fw-semibold" style="font-size: 0.8rem;" (click)="selectPersona(null)">
-              ✕ Reset to All Challenges ({{ stats.total }})
-            </button>
-          }
+
+          <!-- Share Active Filter View Button -->
+          <button 
+            class="btn btn-sm btn-outline-secondary py-1 px-2 d-flex align-items-center gap-1"
+            (click)="shareActiveFilters()"
+            title="Share this filtered track and search view with others"
+            style="font-size: 0.8rem;"
+          >
+            <i class="bi bi-share-fill text-primary"></i>
+            <span>Share Filtered View</span>
+          </button>
         </div>
 
         <!-- Responsive Fluid Track Pills Grid -->
@@ -122,7 +128,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                   class="form-control border-start-0 input-evergreen shadow-none" 
                   placeholder="Filter by keyword, ID, ministry, tech..."
                   [ngModel]="psService.filterState().searchQuery"
-                  (ngModelChange)="psService.setSearchQuery($event); currentPage.set(1)"
+                  (ngModelChange)="onSearchChange($event)"
                 />
               </div>
             </div>
@@ -132,7 +138,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().category"
-                (ngModelChange)="psService.setCategory($event); currentPage.set(1)"
+                (ngModelChange)="onCategoryChange($event)"
               >
                 <option value="All">All Categories</option>
                 <option value="Software">Software Only</option>
@@ -145,7 +151,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().theme"
-                (ngModelChange)="psService.setTheme($event); currentPage.set(1)"
+                (ngModelChange)="onThemeChange($event)"
               >
                 <option value="All">All Themes ({{ themes.length }})</option>
                 @for (theme of themes; track theme) {
@@ -159,7 +165,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().sortBy"
-                (ngModelChange)="psService.setSortBy($event)"
+                (ngModelChange)="onSortChange($event)"
               >
                 <option value="relevance">Sort: Top Match</option>
                 <option value="psNumber">Sort: PS Number</option>
@@ -178,7 +184,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                   type="button" 
                   class="view-mode-btn" 
                   [class.active]="viewMode() === 'card'"
-                  (click)="viewMode.set('card')"
+                  (click)="setViewMode('card')"
                   title="Card Grid View"
                   aria-label="Card View"
                 >
@@ -189,7 +195,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                   type="button" 
                   class="view-mode-btn" 
                   [class.active]="viewMode() === 'table'"
-                  (click)="viewMode.set('table')"
+                  (click)="setViewMode('table')"
                   title="Compact Table View"
                   aria-label="Table View"
                 >
@@ -230,6 +236,9 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
         <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
           <span class="text-muted small">
             Showing <strong>{{ getShowingRange() }}</strong> of <strong>{{ psService.filteredStatements().length }}</strong> challenges
+            @if (psService.activePersonaId()) {
+              <span class="text-primary fw-semibold"> ({{ getActivePersonaTitle() }})</span>
+            }
           </span>
 
           <div class="d-flex align-items-center gap-2">
@@ -409,7 +418,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
             <h4 class="fs-6 fw-bold text-main">No problem statements match your criteria</h4>
             <p class="text-muted small mb-3">Try adjusting your search terms or clearing selected category filters.</p>
             <div>
-              <button class="btn btn-sm btn-primary" (click)="psService.resetFilters()">Reset All Filters</button>
+              <button class="btn btn-sm btn-primary" (click)="resetAllFilters()">Reset All Filters</button>
             </div>
           </div>
         }
@@ -463,6 +472,7 @@ export class HomeComponent implements OnInit {
   shareService = inject(ShareService);
   private seoService = inject(SeoService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   stats = this.psService.getStatistics();
   themes = this.psService.getAllThemes();
@@ -480,37 +490,133 @@ export class HomeComponent implements OnInit {
       '/'
     );
 
-    const initialView = this.route.snapshot.queryParamMap.get('view');
-    if (initialView === 'table') {
-      this.viewMode.set('table');
-    }
-    const initialPersona = this.route.snapshot.queryParamMap.get('persona');
-    if (initialPersona) {
-      this.selectPersona(initialPersona);
-    }
-
+    // Read initial Query Parameters for Shareable Filters
     this.route.queryParams.subscribe(params => {
-      if (params['persona'] !== undefined) {
-        this.selectPersona(params['persona'] || null);
+      const track = params['track'] || params['persona'];
+      if (track) {
+        this.psService.setActivePersona(track);
       }
-      if (params['view']) {
-        this.viewMode.set(params['view'] === 'table' ? 'table' : 'card');
+      if (params['category']) {
+        this.psService.setCategory(params['category']);
       }
+      if (params['theme']) {
+        this.psService.setTheme(params['theme']);
+      }
+      if (params['q']) {
+        this.psService.setSearchQuery(params['q']);
+      }
+      if (params['sort']) {
+        this.psService.setSortBy(params['sort']);
+      }
+      if (params['view'] === 'table') {
+        this.viewMode.set('table');
+      }
+    });
+  }
+
+  updateQueryParams(): void {
+    const state = this.psService.filterState();
+    const track = this.psService.activePersonaId();
+    const qparams: Record<string, string | null> = {};
+
+    if (track) qparams['track'] = track;
+    else qparams['track'] = null;
+
+    if (state.category !== 'All') qparams['category'] = state.category;
+    else qparams['category'] = null;
+
+    if (state.theme !== 'All') qparams['theme'] = state.theme;
+    else qparams['theme'] = null;
+
+    if (state.searchQuery) qparams['q'] = state.searchQuery;
+    else qparams['q'] = null;
+
+    if (state.sortBy !== 'relevance') qparams['sort'] = state.sortBy;
+    else qparams['sort'] = null;
+
+    if (this.viewMode() === 'table') qparams['view'] = 'table';
+    else qparams['view'] = null;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: qparams,
+      queryParamsHandling: 'merge'
     });
   }
 
   selectPersona(id: string | null): void {
     this.psService.setActivePersona(id);
     this.currentPage.set(1);
+    this.updateQueryParams();
+  }
+
+  onSearchChange(q: string): void {
+    this.psService.setSearchQuery(q);
+    this.currentPage.set(1);
+    this.updateQueryParams();
+  }
+
+  onCategoryChange(cat: any): void {
+    this.psService.setCategory(cat);
+    this.currentPage.set(1);
+    this.updateQueryParams();
+  }
+
+  onThemeChange(theme: string): void {
+    this.psService.setTheme(theme);
+    this.currentPage.set(1);
+    this.updateQueryParams();
+  }
+
+  onSortChange(sort: any): void {
+    this.psService.setSortBy(sort);
+    this.updateQueryParams();
+  }
+
+  setViewMode(mode: 'card' | 'table'): void {
+    this.viewMode.set(mode);
+    this.updateQueryParams();
   }
 
   setSort(field: any): void {
     this.psService.setSortBy(field);
+    this.updateQueryParams();
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageSize.set(Number(newSize));
     this.currentPage.set(1);
+  }
+
+  resetAllFilters(): void {
+    this.psService.resetFilters();
+    this.selectPersona(null);
+    this.updateQueryParams();
+  }
+
+  shareActiveFilters(): void {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sih2026.gov.in';
+    const trackId = this.psService.activePersonaId();
+    const trackName = this.getActivePersonaTitle();
+    const state = this.psService.filterState();
+    const count = this.psService.filteredStatements().length;
+
+    let title = 'SIH 2026 Problem Statement Filter View';
+    if (trackId) {
+      title = `SIH 2026: ${trackName} Track (${count} Challenges)`;
+    } else if (state.category !== 'All') {
+      title = `SIH 2026: ${state.category} Challenges (${count})`;
+    } else if (state.theme !== 'All') {
+      title = `SIH 2026: ${state.theme} Theme (${count} Challenges)`;
+    }
+
+    const currentUrl = typeof window !== 'undefined' ? window.location.href : `${origin}/`;
+
+    this.shareService.openShare({
+      title,
+      text: `Explore ${count} SIH 2026 challenges filtered by ${trackId ? trackName : 'criteria'}.`,
+      url: currentUrl
+    });
   }
 
   getShowingRange(): string {
