@@ -1,0 +1,26 @@
+# Smart India Hackathon 2026 (SIH 2026) Problem Statement Navigator & Solution Architect
+
+> Official Repository and Knowledge Base for all 229 Smart India Hackathon 2026 problem statements, system architectures, full-stack tech stacks, AI/ML models, and 6-slide presentation pitch decks.
+
+## Core Features & Index
+- **Live Portal**: https://sih2026-portal.vercel.app/
+- **Total Problem Statements**: 229 Challenges (Software & Hardware)
+- **Top 10 Curated Hackathon Portals**: https://sih2026-portal.vercel.app/ranked
+- **Department Tech Roadmaps (CSE, AI, ECE, Cyber)**: https://sih2026-portal.vercel.app/skills
+- **Side-by-Side Comparator**: https://sih2026-portal.vercel.app/compare
+- **Standard 6-Slide Pitch Format**: Included for all 229 problem statements
+
+## Key High-Impact Problem Statements
+- **SIH26044**: High-Speed Legal AI Search & Precedent Citation Engine (Ministry of Law & Justice)
+- **SIH26001**: NER AI Early Warning & Landslide Risk Monitoring System (MDoNER)
+- **SIH26003**: Cognitive Gaming & Memory Assistance Platform for Dementia (MDoNER)
+- **SIH26019**: AI-Driven Track Defect & Obstacle Detection for Indian Railways
+- **SIH26027**: Heritage Metaverse & AI Multi-lingual Cultural Preservation (Ministry of Culture)
+
+## Mandatory 6-Slide Presentation Deck Structure
+1. **Slide 1**: Title, Team Name, Problem Statement ID, Organization & Mentor
+2. **Slide 2**: Problem Understanding, Severity Metrics & Existing Gaps
+3. **Slide 3**: Proposed Solution, Innovation & Unique Value Proposition (USP)
+4. **Slide 4**: Technical Architecture Diagram, Tech Stack & Data Flow
+5. **Slide 5**: Feasibility, Scalability, 36-hr Hackathon Roadmap & Security
+6. **Slide 6**: Quantifiable Impact, Expected Deliverables & Government Value

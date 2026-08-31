@@ -354,6 +354,66 @@ export type DetailTab = 'overview' | 'architecture' | 'solutions' | 'pitch';
           </div>
         }
 
+                <!-- SEO & AI Question-Answer Rich Accordion Section -->
+        <section class="mt-5 pt-4 border-top border-subtle" itemscope itemtype="https://schema.org/FAQPage">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1" style="font-size: 0.75rem;">
+              SIH 2026 Evaluation FAQ
+            </span>
+            <h3 class="fs-5 fw-bold text-main m-0">Frequently Asked Questions: {{ item.ps_number }}</h3>
+          </div>
+
+          <div class="d-flex flex-column gap-3">
+            <div class="card card-evergreen p-3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h4 class="fs-6 fw-bold text-main mb-2" itemprop="name">
+                <i class="bi bi-question-circle text-primary me-2"></i> What is the objective of {{ item.ps_number }}?
+              </h4>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="text-muted small mb-0" itemprop="text">
+                  <strong>{{ item.title }}</strong> is a <strong>{{ item.category }}</strong> challenge by <strong>{{ item.org }}</strong> under the <strong>{{ item.theme }}</strong> theme. The goal is to develop a production-ready, scalable prototype addressing {{ item.description }}.
+                </p>
+              </div>
+            </div>
+
+            <div class="card card-evergreen p-3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h4 class="fs-6 fw-bold text-main mb-2" itemprop="name">
+                <i class="bi bi-cpu text-success me-2"></i> What tech stack gives the highest scoring potential for {{ item.ps_number }}?
+              </h4>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="text-muted small mb-0" itemprop="text">
+                  The recommended stack combines 
+                  <strong>Frontend:</strong> {{ (item.architecture.frontend || []).join(', ') || 'Angular / React' }}; 
+                  <strong>Backend:</strong> {{ (item.architecture.backend || []).join(', ') || 'Node.js / FastAPI' }}; 
+                  @if (item.architecture.aiMl && item.architecture.aiMl.length > 0) {
+                    <strong>AI/ML:</strong> {{ item.architecture.aiMl.join(', ') }};
+                  }
+                  @if (item.architecture.hardware && item.architecture.hardware.length > 0) {
+                    <strong>Embedded Hardware:</strong> {{ item.architecture.hardware.join(', ') }};
+                  }
+                  <strong>Database & DevOps:</strong> {{ (item.architecture.database || []).join(', ') }}, Docker & Cloud Deployment.
+                </p>
+              </div>
+            </div>
+
+            <div class="card card-evergreen p-3" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h4 class="fs-6 fw-bold text-main mb-2" itemprop="name">
+                <i class="bi bi-file-earmark-slides text-warning me-2"></i> How should our team structure the 6-slide presentation for SIH jury?
+              </h4>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="text-muted small mb-0" itemprop="text">
+                  Follow the official 6-slide sequence: 
+                  <strong>Slide 1:</strong> Title, Team & Mentor | 
+                  <strong>Slide 2:</strong> Problem Understanding & Impact Metrics | 
+                  <strong>Slide 3:</strong> Innovation & USP Hook | 
+                  <strong>Slide 4:</strong> System Architecture & Stack Diagram | 
+                  <strong>Slide 5:</strong> Feasibility, Security & 36-hr Hackathon Roadmap | 
+                  <strong>Slide 6:</strong> Measurable Impact, Expected Deliverables & Government Value.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Similar Challenges -->
         @if (similarStatements().length > 0) {
           <section class="mt-5">
