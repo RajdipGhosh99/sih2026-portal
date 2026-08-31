@@ -22,6 +22,9 @@ import { HighlightPipe } from '../../../core/pipes/highlight.pipe';
             <span class="category-pill" [class.hw-tag]="ps.category === 'Hardware'">
               {{ ps.category }}
             </span>
+            <span class="difficulty-pill" [ngClass]="'diff-' + ps.difficulty.toLowerCase()">
+              {{ ps.difficulty }}
+            </span>
             @if (ps.rank && ps.rank <= 10) {
               <span class="rank-pill">Top {{ ps.rank }}</span>
             }
@@ -115,6 +118,35 @@ import { HighlightPipe } from '../../../core/pipes/highlight.pipe';
       border: 1px solid var(--border);
       padding: 0.15rem 0.4rem;
       border-radius: 4px;
+    }
+
+        .difficulty-pill {
+      font-size: 0.675rem;
+      font-weight: 600;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+
+      &.diff-beginner {
+        color: var(--accent-green);
+        background: rgba(16, 185, 129, 0.1);
+        border-color: rgba(16, 185, 129, 0.25);
+      }
+      &.diff-intermediate {
+        color: var(--primary);
+        background: var(--primary-subtle);
+        border-color: rgba(2, 132, 199, 0.25);
+      }
+      &.diff-advanced {
+        color: var(--accent-amber);
+        background: rgba(217, 119, 6, 0.1);
+        border-color: rgba(217, 119, 6, 0.25);
+      }
+      &.diff-expert {
+        color: var(--accent-red);
+        background: rgba(220, 38, 38, 0.1);
+        border-color: rgba(220, 38, 38, 0.25);
+      }
     }
 
     .category-pill {

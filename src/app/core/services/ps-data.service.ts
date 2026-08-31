@@ -156,8 +156,16 @@ export class PsDataService {
       case 'category':
         list.sort((a, b) => a.category.localeCompare(b.category));
         break;
-      case 'theme':
+            case 'theme':
         list.sort((a, b) => a.theme.localeCompare(b.theme));
+        break;
+      case 'difficulty-asc':
+        const diffRankAsc: Record<string, number> = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3, 'Expert': 4 };
+        list.sort((a, b) => (diffRankAsc[a.difficulty] || 2) - (diffRankAsc[b.difficulty] || 2));
+        break;
+      case 'difficulty-desc':
+        const diffRankDesc: Record<string, number> = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3, 'Expert': 4 };
+        list.sort((a, b) => (diffRankDesc[b.difficulty] || 2) - (diffRankDesc[a.difficulty] || 2));
         break;
     }
 
@@ -166,7 +174,18 @@ export class PsDataService {
 
   // Top 10 for the currently active persona or default
   top10ForActivePersona = computed(() => {
-    return this.filteredStatements().slice(0, 10);
+    const activeId = this.activePersonaId();
+    if (activeId) {
+      return this.getTop10ForPersona(activeId);
+    }
+    return this.allStatements
+      .slice(0, 10)
+      .map(ps => ({
+        ...ps,
+        matchScore: 90,
+        matchPercentage: 90,
+        matchedSkills: ps.skills
+      } as ScoredProblemStatement));
   });
 
   // Get Top 10 specifically for any persona id

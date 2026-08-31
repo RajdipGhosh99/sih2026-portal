@@ -168,6 +168,8 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                 (ngModelChange)="onSortChange($event)"
               >
                 <option value="relevance">Sort: Top Match</option>
+                <option value="difficulty-asc">Sort: Easy to Hard (Beginner → Expert)</option>
+                <option value="difficulty-desc">Sort: Hard to Easy (Expert → Beginner)</option>
                 <option value="psNumber">Sort: PS Number</option>
                 <option value="title">Sort: Title (A-Z)</option>
                 <option value="ministry">Sort: Ministry</option>
