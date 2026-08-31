@@ -24,7 +24,6 @@ export class ThemeService {
     if (saved === 'light' || saved === 'dark') {
       this.setTheme(saved);
     } else {
-      // Default to dark, or check OS preference
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.setTheme(prefersDark ? 'dark' : 'dark');
     }
@@ -40,6 +39,7 @@ export class ThemeService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.THEME_KEY, theme);
       const root = this.doc.documentElement;
+      root.setAttribute('data-theme', theme);
       root.setAttribute('data-bs-theme', theme);
       root.classList.remove('theme-light', 'theme-dark');
       root.classList.add(`theme-${theme}`);

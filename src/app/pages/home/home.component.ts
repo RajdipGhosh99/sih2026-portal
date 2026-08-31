@@ -13,106 +13,99 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, PsCardComponent, PitchModalComponent],
   template: `
-    <div class="container-xl py-4">
-      <!-- Simple Clean Hero -->
-      <section class="mb-4">
-        <div class="p-4 p-md-5 rounded-4 hero-banner">
-          <div class="row align-items-center">
-            <div class="col-lg-8">
-              <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1 rounded-pill mb-3 fw-semibold">
-                Smart India Hackathon 2026 Explorer
-              </span>
-              <h1 class="fw-bold tracking-tight text-title mb-2 fs-2 fs-md-1">
-                Find the Right Problem Statement for Your Stack
-              </h1>
-              <p class="text-secondary fs-6 mb-4" style="max-width: 620px;">
-                Explore all 229 SIH 2026 problem statements with practical full-stack architectures, AI models, and presentation slide templates.
-              </p>
-              
-              <!-- Quick Stats -->
-              <div class="d-flex flex-wrap gap-3 small text-muted">
-                <span class="d-flex align-items-center gap-1">
-                  <i class="bi bi-collection-fill text-primary"></i> <strong>{{ stats.total }}</strong> Challenges
-                </span>
-                <span class="d-flex align-items-center gap-1">
-                  <i class="bi bi-window-stack text-success"></i> <strong>{{ stats.softwareCount }}</strong> Software
-                </span>
-                <span class="d-flex align-items-center gap-1">
-                  <i class="bi bi-motherboard text-warning"></i> <strong>{{ stats.hardwareCount }}</strong> Hardware
-                </span>
-                <span class="d-flex align-items-center gap-1">
-                  <i class="bi bi-building text-info"></i> <strong>{{ stats.ministriesCount }}</strong> Ministries
-                </span>
-              </div>
+    <main class="container-xl py-3 py-md-4">
+      <!-- Clean Hero Header -->
+      <section class="card-evergreen p-3 p-md-4 mb-4">
+        <div class="row align-items-center g-3">
+          <div class="col-lg-9">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 mb-2 fw-semibold" style="font-size: 0.75rem;">
+              Smart India Hackathon 2026
+            </span>
+            <h1 class="fs-3 fs-md-2 fw-bold text-main mb-2">
+              Problem Statement Navigator & Architecture Guide
+            </h1>
+            <p class="text-muted small mb-3" style="max-width: 680px;">
+              Filter 229 official SIH 2026 problem statements by your team's skillset. Access grounded full-stack system architectures, AI models, and presentation pitch deck outlines.
+            </p>
+
+            <!-- Stats strip -->
+            <div class="d-flex flex-wrap gap-3 small text-muted">
+              <span><strong>{{ stats.total }}</strong> Challenges</span>
+              <span>•</span>
+              <span><strong>{{ stats.softwareCount }}</strong> Software</span>
+              <span>•</span>
+              <span><strong>{{ stats.hardwareCount }}</strong> Hardware</span>
+              <span>•</span>
+              <span><strong>{{ stats.ministriesCount }}</strong> Ministries</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Step 1: Simple Skillset Focus Filter Pills -->
-      <section class="mb-4">
-        <div class="d-flex flex-column gap-2 mb-3">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <span class="text-muted small fw-bold text-uppercase">Filter by Primary Skillset / Track:</span>
-            @if (psService.activePersonaId()) {
-              <button class="btn btn-sm btn-link text-decoration-none text-muted p-0" (click)="selectPersona(null)">
-                Show All Problem Statements
-              </button>
-            }
-          </div>
+      <!-- Step 1: Horizontal Scrollable Filter Pills -->
+      <section class="mb-3">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Select Focus Track:</span>
+          @if (psService.activePersonaId()) {
+            <button class="btn btn-sm btn-link text-decoration-none text-muted p-0" style="font-size: 0.8rem;" (click)="selectPersona(null)">
+              Reset to All
+            </button>
+          }
+        </div>
 
-          <div class="d-flex flex-wrap gap-2">
+        <div class="horizontal-scroll-container pb-2">
+          <div class="d-flex gap-2">
             <button 
-              class="filter-pill" 
+              class="pill-filter" 
               [class.active]="psService.activePersonaId() === null"
               (click)="selectPersona(null)"
             >
               All Tracks ({{ stats.total }})
             </button>
             <button 
-              class="filter-pill" 
+              class="pill-filter" 
               [class.active]="psService.activePersonaId() === 'full-stack'"
               (click)="selectPersona('full-stack')"
             >
-              💻 Full-Stack Development
+              <i class="bi bi-window-stack"></i> Full-Stack Development
             </button>
             <button 
-              class="filter-pill" 
+              class="pill-filter" 
               [class.active]="psService.activePersonaId() === 'ai-ml'"
               (click)="selectPersona('ai-ml')"
             >
-              🧠 AI & Machine Learning
+              <i class="bi bi-cpu"></i> AI & Machine Learning
             </button>
             <button 
-              class="filter-pill" 
+              class="pill-filter" 
               [class.active]="psService.activePersonaId() === 'cybersecurity'"
               (click)="selectPersona('cybersecurity')"
             >
-              🛡️ Cybersecurity & Forensics
+              <i class="bi bi-shield-check"></i> Cybersecurity & Forensics
             </button>
             <button 
-              class="filter-pill" 
+              class="pill-filter" 
               [class.active]="psService.activePersonaId() === 'ece-embedded'"
               (click)="selectPersona('ece-embedded')"
             >
-              ⚡ Hardware & Embedded (ECE)
+              <i class="bi bi-motherboard"></i> Hardware & Embedded (ECE)
             </button>
           </div>
         </div>
 
-        <!-- Simple Search & Secondary Filters Bar -->
-        <div class="card p-3 filter-bar mb-4">
+        <!-- Filter Controls Bar -->
+        <div class="card card-evergreen p-2 p-md-3 mt-2 mb-3">
           <div class="row g-2 align-items-center">
             <!-- Search -->
-            <div class="col-md-5">
+            <div class="col-12 col-md-5">
               <div class="input-group input-group-sm">
-                <span class="input-group-text bg-subtle border-subtle text-muted">
-                  <i class="bi bi-search"></i>
+                <span class="input-group-text bg-card border-end-0 border-subtle">
+                  <i class="bi bi-search text-muted"></i>
                 </span>
                 <input 
                   type="text" 
-                  class="form-control form-control-sm bg-subtle border-subtle text-title shadow-none" 
-                  placeholder="Filter by keyword, title, or ministry..."
+                  class="form-control border-start-0 input-evergreen shadow-none" 
+                  placeholder="Filter by keyword, title, ministry, tech..."
                   [ngModel]="psService.filterState().searchQuery"
                   (ngModelChange)="psService.setSearchQuery($event)"
                 />
@@ -122,7 +115,7 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
             <!-- Category Filter -->
             <div class="col-6 col-md-2">
               <select 
-                class="form-select form-select-sm bg-subtle border-subtle text-title"
+                class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().category"
                 (ngModelChange)="psService.setCategory($event)"
               >
@@ -135,7 +128,7 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
             <!-- Theme Filter -->
             <div class="col-6 col-md-3">
               <select 
-                class="form-select form-select-sm bg-subtle border-subtle text-title"
+                class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().theme"
                 (ngModelChange)="psService.setTheme($event)"
               >
@@ -147,9 +140,9 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
             </div>
 
             <!-- Sort By -->
-            <div class="col-md-2">
+            <div class="col-12 col-md-2">
               <select 
-                class="form-select form-select-sm bg-subtle border-subtle text-title"
+                class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().sortBy"
                 (ngModelChange)="psService.setSortBy($event)"
               >
@@ -163,12 +156,12 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
         </div>
       </section>
 
-      <!-- Top 10 Spotlight (When track is selected) -->
+      <!-- Top 10 Spotlight (When Track Selected) -->
       @if (psService.activePersonaId()) {
         <section class="mb-4">
           <div class="d-flex align-items-center gap-2 mb-3">
-            <span class="badge bg-primary px-2 py-1">Top 10 Spotlight</span>
-            <h2 class="fs-5 fw-bold text-title m-0">Recommended for {{ getActivePersonaTitle() }}</h2>
+            <span class="badge bg-primary px-2 py-1" style="font-size: 0.75rem;">Top 10 Recommendations</span>
+            <h2 class="fs-6 fw-bold text-main m-0">Recommended for {{ getActivePersonaTitle() }}</h2>
           </div>
 
           <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
@@ -185,12 +178,12 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
         </section>
       }
 
-      <!-- Main Results Directory -->
+      <!-- Main Directory Grid -->
       <section>
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <div class="text-secondary small">
-            Showing <strong>{{ psService.filteredStatements().length }}</strong> results
-          </div>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-muted small">
+            Showing <strong>{{ psService.filteredStatements().length }}</strong> problem statements
+          </span>
         </div>
 
         @if (psService.filteredStatements().length > 0) {
@@ -206,7 +199,7 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
             }
           </div>
 
-          <!-- Pagination -->
+          <!-- Pagination Bar -->
           @if (totalPages() > 1) {
             <div class="d-flex align-items-center justify-content-center gap-2 mt-4 pt-2">
               <button 
@@ -227,49 +220,29 @@ import { PitchModalComponent } from '../../shared/components/pitch-modal/pitch-m
             </div>
           }
         } @else {
-          <div class="card p-5 text-center bg-subtle border-subtle">
-            <i class="bi bi-search fs-1 text-muted mb-2"></i>
-            <h5 class="fw-bold text-title">No matching problem statements found</h5>
-            <p class="text-secondary small mb-3">Try clearing search keywords or selecting 'All Tracks'.</p>
+          <div class="card card-evergreen p-5 text-center my-4">
+            <i class="bi bi-search fs-2 text-muted mb-2"></i>
+            <h4 class="fs-6 fw-bold text-main">No problem statements match your criteria</h4>
+            <p class="text-muted small mb-3">Try adjusting your search terms or clearing selected category filters.</p>
             <div>
-              <button class="btn btn-sm btn-primary" (click)="psService.resetFilters()">Reset Filters</button>
+              <button class="btn btn-sm btn-primary" (click)="psService.resetFilters()">Reset All Filters</button>
             </div>
           </div>
         }
       </section>
 
-      <!-- Pitch Modal -->
+      <!-- Pitch Deck Modal -->
       <app-pitch-modal 
         [ps]="selectedPitchPs()"
         [isOpen]="!!selectedPitchPs()"
         (close)="selectedPitchPs.set(null)"
       ></app-pitch-modal>
-    </div>
+    </main>
   `,
   styles: [`
-    .hero-banner {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--card-shadow);
-    }
-
-    .text-title {
-      color: var(--text-primary);
-    }
-
-    .filter-bar {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-    }
-
-    .bg-subtle {
-      background-color: var(--bg-surface-subtle) !important;
-    }
-
-    .border-subtle {
-      border-color: var(--border-color) !important;
-    }
+    .text-main { color: var(--text-main); }
+    .bg-card { background-color: var(--bg-card); }
+    .border-subtle { border-color: var(--border) !important; }
   `]
 })
 export class HomeComponent implements OnInit {
@@ -286,7 +259,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.seoService.setGeneralSeo(
-      'SIH 2026 Problem Statements & Project Navigator',
+      'SIH 2026 Problem Statement Navigator',
       'Discover problem statements for Full Stack Web, AI/ML, and ECE with practical architectures, tools, and presentation slides.',
       ['Smart India Hackathon 2026', 'Full Stack Hackathon', 'AI ML Projects', 'SIH PS List'],
       '/'

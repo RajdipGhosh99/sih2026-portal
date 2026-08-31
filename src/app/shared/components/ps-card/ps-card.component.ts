@@ -12,209 +12,179 @@ import { HighlightPipe } from '../../../core/pipes/highlight.pipe';
   standalone: true,
   imports: [CommonModule, RouterLink, TechBadgeComponent, TruncatePipe, HighlightPipe],
   template: `
-    <div class="card h-100 human-card">
-      <div class="card-body p-3 d-flex flex-column justify-content-between">
-        <div>
-          <!-- Header Meta -->
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="d-flex align-items-center gap-2">
-              <span class="ps-id-tag">{{ ps.ps_number }}</span>
-              <span class="category-indicator" [class.is-hw]="ps.category === 'Hardware'">
-                {{ ps.category }}
-              </span>
-              @if (ps.rank && ps.rank <= 10) {
-                <span class="rank-tag">Top {{ ps.rank }}</span>
-              }
-            </div>
-
-            <!-- Bookmark / Compare buttons -->
-            <div class="d-flex align-items-center gap-1">
-              <button 
-                class="icon-btn" 
-                [class.active]="bookmarkService.isInCompare(ps.ps_number)"
-                (click)="bookmarkService.toggleCompare(ps.ps_number)"
-                title="Add to comparison"
-              >
-                <i class="bi bi-layout-split"></i>
-              </button>
-              <button 
-                class="icon-btn" 
-                [class.active]="bookmarkService.isBookmarked(ps.ps_number)"
-                (click)="bookmarkService.toggleBookmark(ps.ps_number)"
-                title="Save for later"
-              >
-                <i class="bi" [ngClass]="bookmarkService.isBookmarked(ps.ps_number) ? 'bi-bookmark-fill text-warning' : 'bi-bookmark'"></i>
-              </button>
-            </div>
+    <article class="card card-evergreen h-100 p-3 d-flex flex-column justify-content-between">
+      <div>
+        <!-- Top Meta Row -->
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-1">
+            <span class="ps-number-pill">{{ ps.ps_number }}</span>
+            <span class="category-pill" [class.hw-tag]="ps.category === 'Hardware'">
+              {{ ps.category }}
+            </span>
+            @if (ps.rank && ps.rank <= 10) {
+              <span class="rank-pill">Top {{ ps.rank }}</span>
+            }
           </div>
 
-          <!-- Title -->
-          <h5 class="card-title fs-6 fw-bold mb-2">
-            <a [routerLink]="['/ps', ps.ps_number]" class="title-link" [innerHTML]="ps.title | highlight:searchQuery"></a>
-          </h5>
-
-          <!-- Ministry & Theme info -->
-          <div class="card-meta text-muted small mb-2">
-            <span class="d-block text-truncate" title="{{ ps.org }}">
-              <i class="bi bi-building me-1"></i>{{ ps.org | truncate:42 }}
-            </span>
-            <span>
-              <i class="bi bi-tag me-1"></i>{{ ps.theme }}
-            </span>
+          <!-- Bookmark & Compare actions -->
+          <div class="d-flex align-items-center gap-1">
+            <button 
+              class="action-btn" 
+              [class.active]="bookmarkService.isInCompare(ps.ps_number)"
+              (click)="bookmarkService.toggleCompare(ps.ps_number)"
+              title="Add to compare"
+              aria-label="Compare"
+            >
+              <i class="bi bi-layout-split"></i>
+            </button>
+            <button 
+              class="action-btn" 
+              [class.active]="bookmarkService.isBookmarked(ps.ps_number)"
+              (click)="bookmarkService.toggleBookmark(ps.ps_number)"
+              title="Bookmark challenge"
+              aria-label="Bookmark"
+            >
+              <i class="bi" [ngClass]="bookmarkService.isBookmarked(ps.ps_number) ? 'bi-bookmark-fill text-warning' : 'bi-bookmark'"></i>
+            </button>
           </div>
-
-          <!-- Description -->
-          <p class="card-text small desc-text mb-3" [innerHTML]="(ps.description | truncate:140) | highlight:searchQuery"></p>
         </div>
 
-        <div>
-          <!-- Tech badges -->
-          <div class="d-flex flex-wrap gap-1 mb-3">
-            @for (skill of ps.skills.slice(0, 4); track skill) {
-              <app-tech-badge [tech]="skill"></app-tech-badge>
-            }
-            @if (ps.skills.length > 4) {
-              <span class="more-badge">+{{ ps.skills.length - 4 }}</span>
-            }
-          </div>
+        <!-- Title -->
+        <h3 class="fs-6 fw-bold mb-2 ps-card-heading">
+          <a [routerLink]="['/ps', ps.ps_number]" class="ps-title-link" [innerHTML]="ps.title | highlight:searchQuery"></a>
+        </h3>
 
-          <!-- Footer Action Buttons -->
-          <div class="d-flex align-items-center justify-content-between pt-2 border-top border-subtle">
-            <button class="btn btn-sm btn-outline-custom" (click)="openPitch.emit(ps)">
-              <i class="bi bi-file-earmark-slides me-1"></i> Pitch Deck
-            </button>
-            <a [routerLink]="['/ps', ps.ps_number]" class="btn btn-sm btn-primary-custom">
-              View Solution <i class="bi bi-arrow-right ms-1"></i>
-            </a>
+        <!-- Ministry & Theme -->
+        <div class="ps-meta small text-muted mb-2">
+          <div class="text-truncate" title="{{ ps.org }}">
+            <i class="bi bi-building me-1"></i>{{ ps.org | truncate:44 }}
           </div>
+          <div>
+            <i class="bi bi-tag me-1"></i>{{ ps.theme }}
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="ps-description small text-muted mb-3" [innerHTML]="(ps.description | truncate:135) | highlight:searchQuery"></p>
+      </div>
+
+      <div>
+        <!-- Tech Stack Tags -->
+        <div class="d-flex flex-wrap gap-1 mb-3">
+          @for (skill of ps.skills.slice(0, 4); track skill) {
+            <app-tech-badge [tech]="skill"></app-tech-badge>
+          }
+          @if (ps.skills.length > 4) {
+            <span class="more-count">+{{ ps.skills.length - 4 }}</span>
+          }
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="d-flex align-items-center justify-content-between pt-2 border-top border-subtle">
+          <button class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 0.8rem;" (click)="openPitch.emit(ps)">
+            <i class="bi bi-file-earmark-text me-1"></i> Pitch Deck
+          </button>
+          <a [routerLink]="['/ps', ps.ps_number]" class="btn btn-sm btn-primary py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
+            View Solution →
+          </a>
         </div>
       </div>
-    </div>
+    </article>
   `,
   styles: [`
-    .ps-id-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--primary);
-      background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-color);
-      padding: 0.15rem 0.45rem;
-      border-radius: 5px;
+    .ps-card-heading {
+      line-height: 1.35;
+      margin: 0;
     }
 
-    .category-indicator {
-      font-size: 0.7rem;
+    .ps-number-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.725rem;
       font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--badge-bg);
-      padding: 0.15rem 0.45rem;
+      color: var(--primary);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .category-pill {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 0.15rem 0.4rem;
       border-radius: 4px;
 
-      &.is-hw {
+      &.hw-tag {
         color: var(--accent-amber);
-        background: rgba(245, 158, 11, 0.1);
+        background: rgba(217, 119, 6, 0.1);
       }
     }
 
-    .rank-tag {
+    .rank-pill {
       font-size: 0.7rem;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--accent-amber);
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.25);
-      padding: 0.15rem 0.45rem;
+      background: rgba(217, 119, 6, 0.12);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      padding: 0.15rem 0.4rem;
       border-radius: 4px;
     }
 
-    .icon-btn {
+    .action-btn {
       background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
       transition: all 0.15s ease;
 
       &:hover {
-        background: var(--bg-surface-subtle);
-        color: var(--text-primary);
+        background: var(--bg-subtle);
+        color: var(--text-main);
       }
 
       &.active {
-        background: var(--badge-bg);
         border-color: var(--primary);
         color: var(--primary);
+        background: var(--primary-subtle);
       }
     }
 
-    .title-link {
-      color: var(--text-primary);
+    .ps-title-link {
+      color: var(--text-main);
       text-decoration: none;
-      transition: color 0.15s ease;
 
       &:hover {
         color: var(--primary);
       }
     }
 
-    .desc-text {
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .card-meta {
+    .ps-meta {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
-    .more-badge {
+    .ps-description {
+      line-height: 1.45;
+    }
+
+    .more-count {
       font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text-subtle);
       align-self: center;
-      padding: 0.1rem 0.3rem;
     }
 
     .border-subtle {
-      border-color: var(--border-color) !important;
-    }
-
-    .btn-outline-custom {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      transition: all 0.15s ease;
-
-      &:hover {
-        background: var(--bg-surface-subtle);
-        color: var(--text-primary);
-      }
-    }
-
-    .btn-primary-custom {
-      background: var(--primary);
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 0.8rem;
-      border-radius: 6px;
-      text-decoration: none;
-      padding: 0.35rem 0.75rem;
-      transition: background 0.15s ease;
-
-      &:hover {
-        background: var(--primary-hover);
-        color: #ffffff;
-      }
+      border-color: var(--border) !important;
     }
   `]
 })

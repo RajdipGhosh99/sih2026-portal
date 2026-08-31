@@ -6,45 +6,43 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <span class="custom-badge" [ngClass]="badgeClass">
+    <span class="badge-tag" [ngClass]="badgeClass">
       {{ tech }}
     </span>
   `,
   styles: [`
-    .custom-badge {
+    .badge-tag {
       display: inline-block;
       font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.55rem;
-      border-radius: 6px;
-      letter-spacing: 0.01em;
-      border: 1px solid var(--border-color);
-      background: var(--bg-surface-subtle);
-      color: var(--text-secondary);
-      transition: all 0.15s ease;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
 
-      &.badge-fullstack {
-        background: rgba(2, 132, 199, 0.08);
+      &.tag-fullstack {
+        background: var(--primary-subtle);
         color: var(--primary);
         border-color: rgba(2, 132, 199, 0.2);
       }
 
-      &.badge-ai {
-        background: rgba(99, 102, 241, 0.08);
+      &.tag-ai {
+        background: rgba(99, 102, 241, 0.1);
         color: var(--accent-indigo);
-        border-color: rgba(99, 102, 241, 0.2);
+        border-color: rgba(99, 102, 241, 0.25);
       }
 
-      &.badge-hardware {
-        background: rgba(217, 119, 6, 0.08);
+      &.tag-hardware {
+        background: rgba(217, 119, 6, 0.1);
         color: var(--accent-amber);
-        border-color: rgba(217, 119, 6, 0.2);
+        border-color: rgba(217, 119, 6, 0.25);
       }
 
-      &.badge-emerald {
-        background: rgba(5, 150, 105, 0.08);
-        color: var(--accent-emerald);
-        border-color: rgba(5, 150, 105, 0.2);
+      &.tag-db {
+        background: rgba(5, 150, 105, 0.1);
+        color: var(--accent-green);
+        border-color: rgba(5, 150, 105, 0.25);
       }
     }
   `]
@@ -54,20 +52,24 @@ export class TechBadgeComponent {
   @Input() type?: string;
 
   get badgeClass(): string {
-    if (this.type) return `badge-${this.type}`;
+    if (this.type === 'fullstack') return 'tag-fullstack';
+    if (this.type === 'ai') return 'tag-ai';
+    if (this.type === 'hardware') return 'tag-hardware';
+    if (this.type === 'emerald' || this.type === 'db') return 'tag-db';
+
     const t = this.tech.toLowerCase();
-    if (t.includes('angular') || t.includes('react') || t.includes('node') || t.includes('express') || t.includes('full stack') || t.includes('api') || t.includes('pwa')) {
-      return 'badge-fullstack';
+    if (t.includes('angular') || t.includes('react') || t.includes('node') || t.includes('express') || t.includes('full stack') || t.includes('fastapi') || t.includes('pwa')) {
+      return 'tag-fullstack';
     }
-    if (t.includes('python') || t.includes('pytorch') || t.includes('ai') || t.includes('ml') || t.includes('vision') || t.includes('nlp') || t.includes('yolo') || t.includes('rag')) {
-      return 'badge-ai';
+    if (t.includes('python') || t.includes('pytorch') || t.includes('ai') || t.includes('ml') || t.includes('vision') || t.includes('yolo') || t.includes('nlp')) {
+      return 'tag-ai';
     }
-    if (t.includes('esp32') || t.includes('stm32') || t.includes('sensor') || t.includes('hardware') || t.includes('drone') || t.includes('iot')) {
-      return 'badge-hardware';
+    if (t.includes('esp32') || t.includes('stm32') || t.includes('sensor') || t.includes('hardware') || t.includes('lora')) {
+      return 'tag-hardware';
     }
-    if (t.includes('postgres') || t.includes('database') || t.includes('gis') || t.includes('cloud')) {
-      return 'badge-emerald';
+    if (t.includes('postgres') || t.includes('mongo') || t.includes('database') || t.includes('gis')) {
+      return 'tag-db';
     }
-    return 'badge-default';
+    return '';
   }
 }

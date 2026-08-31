@@ -1,127 +1,161 @@
-/* Bootstrap 5 & Bootstrap Icons */
+/* Evergreen Bootstrap 5 & Icons */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* =========================================================
-   EVERGREEN THEME SYSTEM: LIGHT & DARK MODES
+   EVERGREEN THEME VARIABLES (LIGHT & DARK)
    ========================================================= */
 
-:root, [data-bs-theme="dark"], .theme-dark {
-  --bg-page: #0b1120;
-  --bg-surface: #131d33;
-  --bg-surface-elevated: #1e293b;
-  --bg-surface-subtle: rgba(255, 255, 255, 0.04);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-color-hover: rgba(56, 189, 248, 0.35);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --primary: #38bdf8;
-  --primary-hover: #7dd3fc;
-  --accent-emerald: #10b981;
-  --accent-amber: #f59e0b;
-  --accent-indigo: #818cf8;
-  --badge-bg: rgba(255, 255, 255, 0.06);
-  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  --navbar-bg: rgba(11, 17, 32, 0.88);
-}
-
-[data-bs-theme="light"], .theme-light {
-  --bg-page: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-surface-elevated: #ffffff;
-  --bg-surface-subtle: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-color-hover: #0284c7;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+:root, [data-theme="light"], [data-bs-theme="light"], .theme-light {
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-elevated: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
   --primary: #0284c7;
   --primary-hover: #0369a1;
-  --accent-emerald: #059669;
+  --primary-subtle: #e0f2fe;
+  --accent-green: #059669;
   --accent-amber: #d97706;
   --accent-indigo: #4f46e5;
-  --badge-bg: #f1f5f9;
-  --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-  --navbar-bg: rgba(255, 255, 255, 0.92);
+  --accent-red: #dc2626;
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --navbar-bg: #ffffff;
 }
 
-body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-  min-height: 100vh;
+[data-theme="dark"], [data-bs-theme="dark"], .theme-dark {
+  --bg-app: #0b1120;
+  --bg-card: #131d33;
+  --bg-card-elevated: #1e293b;
+  --bg-subtle: #1a243b;
+  --border: #243049;
+  --border-strong: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --primary: #38bdf8;
+  --primary-hover: #7dd3fc;
+  --primary-subtle: rgba(56, 189, 248, 0.12);
+  --accent-green: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-indigo: #818cf8;
+  --accent-red: #ef4444;
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
+  --navbar-bg: #0f172a;
+}
+
+/* Base Document Setup */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  padding: 0;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 code, pre, kbd {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Evergreen Human-Crafted Card */
-.human-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+/* Evergreen Card Component */
+.card-evergreen {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-color-hover);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  }
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-/* Custom Highlight Mark */
-mark.highlight-match {
-  background: rgba(245, 158, 11, 0.25);
-  color: inherit;
-  padding: 1px 3px;
-  border-radius: 3px;
-  font-weight: 700;
+.card-evergreen:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--card-shadow-hover);
 }
 
-/* Simple pill buttons */
-.filter-pill {
-  background: var(--bg-surface-subtle);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  font-size: 0.825rem;
-  font-weight: 600;
-  padding: 0.45rem 0.9rem;
-  border-radius: 9999px;
+/* Evergreen Search & Input Controls */
+.input-evergreen {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-size: 0.875rem;
+}
+
+.input-evergreen:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--primary-subtle) !important;
+}
+
+.select-evergreen {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.18s ease;
+}
+
+/* Evergreen Filter Buttons */
+.pill-filter {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.825rem;
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-
-  &:hover {
-    color: var(--text-primary);
-    background: var(--border-color);
-  }
-
-  &.active {
-    background: var(--primary);
-    color: #ffffff !important;
-    border-color: var(--primary);
-  }
+  gap: 0.35rem;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+.pill-filter:hover {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border-color: var(--border-strong);
 }
-::-webkit-scrollbar-track {
-  background: var(--bg-page);
+
+.pill-filter.active {
+  background: var(--primary);
+  color: #ffffff !important;
+  border-color: var(--primary);
+  font-weight: 600;
 }
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
+
+/* Clean highlight */
+mark.highlight-match {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: inherit;
+  padding: 1px 2px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+/* Responsive utilities */
+.horizontal-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none;
 }
