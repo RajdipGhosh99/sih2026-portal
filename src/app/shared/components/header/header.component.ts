@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { PsDataService } from '../../../core/services/ps-data.service';
 import { BookmarkService } from '../../../core/services/bookmark.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -10,139 +11,151 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   template: `
-    <header class="navbar navbar-expand-lg navbar-dark sticky-top custom-navbar">
-      <div class="container-xxl">
-        <!-- Brand Logo -->
-        <a routerLink="/" class="navbar-brand d-flex align-items-center gap-2">
-          <div class="logo-box">
-            <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+    <header class="site-navbar sticky-top">
+      <div class="container-xl d-flex align-items-center justify-content-between gap-3">
+        <!-- Brand -->
+        <a routerLink="/" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+          <div class="brand-badge">
+            <i class="bi bi-code-square"></i>
           </div>
-          <div class="d-flex flex-column">
-            <span class="fw-bolder brand-title">SIH 2026</span>
-            <span class="brand-sub">Skill Navigator & Architect</span>
+          <div class="brand-text">
+            <span class="fw-bold fs-5 text-title">SIH 2026</span>
+            <span class="sub-title">Project Navigator</span>
           </div>
         </a>
 
-        <!-- Quick Search (Center) -->
-        <div class="search-box-wrapper mx-auto d-none d-md-block">
-          <div class="input-group">
-            <span class="input-group-text bg-dark border-secondary text-secondary">
-              <i class="bi bi-search"></i>
+        <!-- Search Bar -->
+        <div class="search-container d-none d-md-block flex-grow-1 mx-lg-4" style="max-width: 460px;">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text border-end-0 bg-subtle">
+              <i class="bi bi-search text-muted"></i>
             </span>
             <input 
               type="text" 
-              class="form-control bg-dark text-light border-secondary shadow-none search-input" 
-              placeholder="Search 229 PS by title, ID (SIH26044), theme, tech..."
+              class="form-control border-start-0 bg-subtle text-title shadow-none" 
+              placeholder="Search problem statements (e.g. SIH26044, crop, drone)..."
               [ngModel]="psService.filterState().searchQuery"
               (ngModelChange)="onSearchChange($event)"
             />
             @if (psService.filterState().searchQuery) {
-              <button class="btn btn-outline-secondary" type="button" (click)="psService.setSearchQuery('')">
-                <i class="bi bi-x-lg"></i>
+              <button class="btn btn-outline-secondary border-start-0" type="button" (click)="psService.setSearchQuery('')">
+                <i class="bi bi-x"></i>
               </button>
             }
           </div>
         </div>
 
-        <!-- Nav Links & Badges -->
-        <div class="d-flex align-items-center gap-3">
-          <nav class="nav nav-pills d-none d-lg-flex">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link text-light">
-              <i class="bi bi-compass me-1"></i> Explore PS
-            </a>
-            <a routerLink="/ranked" routerLinkActive="active" class="nav-link text-light">
-              <i class="bi bi-trophy-fill text-warning me-1"></i> Top 10 Portals
-            </a>
-            <a routerLink="/skills" routerLinkActive="active" class="nav-link text-light">
-              <i class="bi bi-journal-code me-1"></i> Tech Roadmaps
-            </a>
-            <a routerLink="/compare" routerLinkActive="active" class="nav-link text-light position-relative">
-              <i class="bi bi-layout-split me-1"></i> Compare
-              @if (bookmarkService.compareList().length > 0) {
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {{ bookmarkService.compareList().length }}
-                </span>
-              }
-            </a>
-          </nav>
-
-          <!-- Saved Bookmarks Counter -->
-          <a routerLink="/compare" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 d-flex align-items-center gap-1">
-            <i class="bi bi-bookmark-star-fill text-warning"></i>
-            <span class="fw-bold">{{ bookmarkService.bookmarks().length }}</span>
-            <span class="d-none d-sm-inline">Saved</span>
+        <!-- Navigation Links -->
+        <nav class="d-flex align-items-center gap-1">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item-link">
+            Problem Statements
           </a>
-        </div>
+          <a routerLink="/ranked" routerLinkActive="active" class="nav-item-link">
+            Top 10 Ranked
+          </a>
+          <a routerLink="/skills" routerLinkActive="active" class="nav-item-link d-none d-sm-inline-block">
+            Tech Stacks
+          </a>
+          <a routerLink="/compare" routerLinkActive="active" class="nav-item-link position-relative">
+            Compare
+            @if (bookmarkService.compareList().length > 0) {
+              <span class="badge rounded-pill bg-danger ms-1">{{ bookmarkService.compareList().length }}</span>
+            }
+          </a>
+
+          <!-- Theme Toggle (Light / Dark) -->
+          <button 
+            class="btn btn-sm theme-toggle-btn ms-2" 
+            (click)="themeService.toggleTheme()" 
+            [title]="themeService.currentTheme() === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+          >
+            <i class="bi" [ngClass]="themeService.currentTheme() === 'dark' ? 'bi-sun-fill text-warning' : 'bi-moon-stars-fill text-primary'"></i>
+          </button>
+        </nav>
       </div>
     </header>
   `,
   styles: [`
-    .custom-navbar {
-      background: rgba(15, 23, 42, 0.9) !important;
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    .site-navbar {
+      background: var(--navbar-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
       padding: 0.75rem 0;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .logo-box {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.1rem;
     }
 
-    .brand-title {
-      font-size: 1.15rem;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-text {
+      display: flex;
+      flex-direction: column;
       line-height: 1.1;
-    }
 
-    .brand-sub {
-      font-size: 0.7rem;
-      color: #94a3b8;
-      font-weight: 500;
-    }
-
-    .search-box-wrapper {
-      width: 100%;
-      max-width: 440px;
-
-      .search-input {
-        border-radius: 0 9999px 9999px 0;
-        font-size: 0.85rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        &:focus {
-          border-color: #38bdf8;
-        }
+      .text-title {
+        color: var(--text-primary);
+        font-weight: 800;
+        letter-spacing: -0.01em;
       }
 
-      .input-group-text {
-        border-radius: 9999px 0 0 9999px;
+      .sub-title {
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        font-weight: 500;
       }
     }
 
-    .nav-pills .nav-link {
+    .bg-subtle {
+      background-color: var(--bg-surface-subtle) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .nav-item-link {
+      color: var(--text-secondary);
       font-size: 0.85rem;
       font-weight: 600;
-      padding: 0.45rem 0.85rem;
-      border-radius: 8px;
-      transition: all 0.2s ease;
+      text-decoration: none;
+      padding: 0.45rem 0.75rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.06);
+        color: var(--text-primary);
+        background: var(--bg-surface-subtle);
       }
 
       &.active {
-        background: rgba(56, 189, 248, 0.15);
-        color: #38bdf8 !important;
-        border: 1px solid rgba(56, 189, 248, 0.3);
+        color: var(--primary);
+        background: var(--badge-bg);
+        font-weight: 700;
+      }
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: var(--border-color);
       }
     }
   `]
@@ -150,6 +163,7 @@ import { FormsModule } from '@angular/forms';
 export class HeaderComponent {
   psService = inject(PsDataService);
   bookmarkService = inject(BookmarkService);
+  themeService = inject(ThemeService);
   private router = inject(Router);
 
   onSearchChange(q: string): void {

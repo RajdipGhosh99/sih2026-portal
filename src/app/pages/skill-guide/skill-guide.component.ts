@@ -2,202 +2,105 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SeoService } from '../../core/services/seo.service';
-import { PsDataService } from '../../core/services/ps-data.service';
 
 @Component({
   selector: 'app-skill-guide',
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="skill-guide-page">
-      <header class="guide-header">
-        <span class="guide-pill">🧭 Departmental Tech Roadmaps</span>
-        <h1>SIH 2026 Skill & Technology Guide</h1>
-        <p>Comprehensive stack recommendations, sensor choices, frameworks, and architecture blueprints for student hackathon teams.</p>
+    <div class="container-xl py-4" style="max-width: 1080px;">
+      <header class="text-center mb-4">
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1 rounded-pill mb-2 fw-semibold">
+          Stack Reference
+        </span>
+        <h1 class="fs-2 fw-bold text-title mb-2">SIH 2026 Technology Roadmaps</h1>
+        <p class="text-secondary small mx-auto" style="max-width: 680px;">
+          Grounded technology stacks for student teams building Full-Stack Web and AI solutions for Smart India Hackathon.
+        </p>
       </header>
 
-      <div class="tracks-container">
-        <!-- Track 1: CSE / IT & Full Stack Web -->
-        <div class="track-card">
-          <div class="track-icon">💻</div>
-          <h2>CSE / IT: Full Stack & Cloud Web Portals</h2>
-          <p class="track-desc">Ideal for two-sided marketplaces, grievance dashboards, crowdsourcing platforms, and public registries.</p>
+      <div class="row g-4">
+        <!-- Full-Stack Web -->
+        <div class="col-md-6">
+          <div class="card human-card p-4 h-100">
+            <h2 class="fs-5 fw-bold text-title mb-2"><i class="bi bi-window-stack text-primary me-2"></i> Full-Stack Web Applications</h2>
+            <p class="text-secondary small mb-3">For two-sided portals, crowdsourcing workflows, and public registries.</p>
 
-          <div class="stack-list">
-            <div class="stack-item">
-              <strong>Frontend Architecture:</strong> Angular 19 Standalone Components + Angular SSR, Tailwind CSS, RxJS, NgRx, PWA.
+            <div class="d-flex flex-column gap-2 small text-secondary bg-subtle p-3 rounded-3 border border-subtle mb-3">
+              <div><strong class="text-title">Frontend:</strong> Angular 19 SSR, Tailwind CSS, Bootstrap 5, RxJS.</div>
+              <div><strong class="text-title">Backend:</strong> Node.js / Express, Python FastAPI for AI microservices.</div>
+              <div><strong class="text-title">Database:</strong> PostgreSQL, MongoDB, Redis for session & cache.</div>
+              <div><strong class="text-title">Key Matches:</strong> SIH26044 (Skill Mapping), SIH26043 (Crowdsourcing), SIH26033 (Farmer D2C).</div>
             </div>
-            <div class="stack-item">
-              <strong>Backend & API Services:</strong> Node.js / Express, Python FastAPI for microservices, WebSockets for live queues.
-            </div>
-            <div class="stack-item">
-              <strong>Database & Caching:</strong> PostgreSQL with PostGIS extensions, MongoDB Atlas, Redis for sub-millisecond caching.
-            </div>
-            <div class="stack-item">
-              <strong>Recommended Challenges:</strong> SIH26044 (Skill Mapping), SIH26043 (Crowdsourcing), SIH26033 (Farmer D2C), SIH26014 (Land Stack).
-            </div>
+
+            <a routerLink="/" [queryParams]="{persona: 'full-stack'}" class="btn btn-sm btn-primary align-self-start">
+              Filter Full-Stack Challenges →
+            </a>
           </div>
-          <a routerLink="/" [queryParams]="{persona: 'full-stack'}" class="btn-track">Explore Full Stack Top 10 →</a>
         </div>
 
-        <!-- Track 2: AI & Data Science -->
-        <div class="track-card">
-          <div class="track-icon">🧠</div>
-          <h2>AI, Machine Learning & Computer Vision</h2>
-          <p class="track-desc">Tailored for satellite Earth observation, medical diagnostics, nowcasting, and NLP chatbots.</p>
+        <!-- AI & Machine Learning -->
+        <div class="col-md-6">
+          <div class="card human-card p-4 h-100">
+            <h2 class="fs-5 fw-bold text-title mb-2"><i class="bi bi-cpu text-indigo me-2"></i> AI & Machine Learning</h2>
+            <p class="text-secondary small mb-3">For computer vision, NLP conversational tools, and predictive models.</p>
 
-          <div class="stack-list">
-            <div class="stack-item">
-              <strong>Vision Models:</strong> YOLOv11 for real-time detection, U-Net for semantic segmentation, PointNet++ for LiDAR 3D.
+            <div class="d-flex flex-column gap-2 small text-secondary bg-subtle p-3 rounded-3 border border-subtle mb-3">
+              <div><strong class="text-title">Vision:</strong> YOLOv11 for detection, OpenCV, PyTorch, ONNX runtime.</div>
+              <div><strong class="text-title">NLP / LLMs:</strong> Hugging Face, LangChain, RAG with vector search, Bhashini speech.</div>
+              <div><strong class="text-title">Predictive:</strong> Scikit-learn, XGBoost, Time-Series Prophet.</div>
+              <div><strong class="text-title">Key Matches:</strong> SIH26167 (SatQuery), SIH26038 (Retinopathy), SIH26077 (Weather Early Warning).</div>
             </div>
-            <div class="stack-item">
-              <strong>NLP & Generative AI:</strong> LangChain, LlamaIndex, Bhashini multilingual speech API, Retrieval-Augmented Generation (RAG).
-            </div>
-            <div class="stack-item">
-              <strong>Spatiotemporal Forecasting:</strong> Graph Neural Networks (GNNs), Temporal Transformers, Diffusion Downscaling.
-            </div>
-            <div class="stack-item">
-              <strong>Recommended Challenges:</strong> SIH26167 (SatQuery AI), SIH26038 (Diabetic Retinopathy), SIH26077 (Weather Nowcasting), SIH26171 (Browser Agent).
-            </div>
+
+            <a routerLink="/" [queryParams]="{persona: 'ai-ml'}" class="btn btn-sm btn-primary align-self-start">
+              Filter AI/ML Challenges →
+            </a>
           </div>
-          <a routerLink="/" [queryParams]="{persona: 'ai-ml'}" class="btn-track">Explore AI/ML Top 10 →</a>
         </div>
 
-        <!-- Track 3: ECE / Embedded & Robotics -->
-        <div class="track-card">
-          <div class="track-icon">⚡</div>
-          <h2>ECE, Embedded Systems & Robotics</h2>
-          <p class="track-desc">Designed for smart mine rovers, anti-drone radar, LoRa sensor mesh, and hardware prototypes.</p>
+        <!-- Cybersecurity -->
+        <div class="col-md-6">
+          <div class="card human-card p-4 h-100">
+            <h2 class="fs-5 fw-bold text-title mb-2"><i class="bi bi-shield-check text-danger me-2"></i> Cybersecurity & Forensics</h2>
+            <p class="text-secondary small mb-3">For packet analysis, threat intelligence, and cryptocurrency tracing.</p>
 
-          <div class="stack-list">
-            <div class="stack-item">
-              <strong>Microcontrollers & SBCs:</strong> ESP32-S3, STM32H7, Raspberry Pi 5, NVIDIA Jetson Orin Nano for Edge AI.
+            <div class="d-flex flex-column gap-2 small text-secondary bg-subtle p-3 rounded-3 border border-subtle mb-3">
+              <div><strong class="text-title">Network Forensics:</strong> Scapy, PyShark, PCAP parsers, JA4 fingerprints.</div>
+              <div><strong class="text-title">Blockchain Analytics:</strong> Web3.py, Bitcoin graph tracing, Smart contract audits.</div>
+              <div><strong class="text-title">Key Matches:</strong> SIH26104 (Voice Cloning Detection), SIH26182 (Crypto VASP Attribution).</div>
             </div>
-            <div class="stack-item">
-              <strong>Sensors & Telemetry:</strong> Solid-state LiDAR, Thermal Cameras, Infrasound, Sonar DAC, LoRaWAN (865-867 MHz in India).
-            </div>
-            <div class="stack-item">
-              <strong>Robotics Middleware:</strong> ROS2 Humble, Micro-ROS, CAN bus OBD-II, Stateflow motor control.
-            </div>
-            <div class="stack-item">
-              <strong>Recommended Challenges:</strong> SIH26058 (SDR Sonar AUV), SIH26025 (Wireless Subsidence Mesh), SIH26177 (Rescue Drone), SIH26007 (Fog Mine Vehicle).
-            </div>
+
+            <a routerLink="/" [queryParams]="{persona: 'cybersecurity'}" class="btn btn-sm btn-primary align-self-start">
+              Filter Cyber Challenges →
+            </a>
           </div>
-          <a routerLink="/" [queryParams]="{persona: 'ece-embedded'}" class="btn-track">Explore ECE & Hardware Top 10 →</a>
         </div>
 
-        <!-- Track 4: Cybersecurity & Blockchain -->
-        <div class="track-card">
-          <div class="track-icon">🛡️</div>
-          <h2>Cybersecurity, Forensics & Blockchain</h2>
-          <p class="track-desc">Focuses on network packet forensics, dark web OSINT, voice cloning defense, and crypto attribution.</p>
+        <!-- Hardware & Embedded (ECE) -->
+        <div class="col-md-6">
+          <div class="card human-card p-4 h-100">
+            <h2 class="fs-5 fw-bold text-title mb-2"><i class="bi bi-motherboard text-warning me-2"></i> Hardware & Embedded (ECE)</h2>
+            <p class="text-secondary small mb-3">For IoT sensor mesh, rovers, drones, and prototype test rigs.</p>
 
-          <div class="stack-list">
-            <div class="stack-item">
-              <strong>Forensics Toolkits:</strong> Scapy, PyShark, Volatility, Tshark, custom LLVM compiler obfuscation engines.
+            <div class="d-flex flex-column gap-2 small text-secondary bg-subtle p-3 rounded-3 border border-subtle mb-3">
+              <div><strong class="text-title">Microcontrollers:</strong> ESP32-S3, STM32, Raspberry Pi, Jetson Orin Nano.</div>
+              <div><strong class="text-title">Communication:</strong> LoRaWAN, BLE, MQTT, CAN bus.</div>
+              <div><strong class="text-title">Key Matches:</strong> SIH26025 (Wireless Subsidence Mesh), SIH26177 (Rescue Drone).</div>
             </div>
-            <div class="stack-item">
-              <strong>Web3 & Crypto:</strong> Ethereum, Solidity Smart Contracts, Web3.py, Graph analytics for Bitcoin/USDT wallet tracing.
-            </div>
-            <div class="stack-item">
-              <strong>Threat Analytics:</strong> World Models for attack prediction, Post-Quantum Cryptography (PQC) assessment, JA4 TLS fingerprinting.
-            </div>
-            <div class="stack-item">
-              <strong>Recommended Challenges:</strong> SIH26104 (Voice Cloning Impersonation), SIH26182 (VASP Attribution), SIH26153 (World Models), SIH26164 (Post-Quantum ECDAT).
-            </div>
+
+            <a routerLink="/" [queryParams]="{persona: 'ece-embedded'}" class="btn btn-sm btn-primary align-self-start">
+              Filter Hardware Challenges →
+            </a>
           </div>
-          <a routerLink="/" [queryParams]="{persona: 'cybersecurity'}" class="btn-track">Explore Cyber & Crypto Top 10 →</a>
         </div>
       </div>
     </div>
   `,
   styles: [`
-    .skill-guide-page {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-
-    .guide-header {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-
-      .guide-pill {
-        background: rgba(56, 189, 248, 0.15);
-        color: #38bdf8;
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        font-weight: 800;
-        font-size: 0.8rem;
-        padding: 4px 12px;
-        border-radius: 9999px;
-      }
-
-      h1 { font-size: 2.5rem; font-weight: 900; color: #f8fafc; margin: 0; }
-      p { font-size: 1.1rem; color: #94a3b8; max-width: 780px; margin: 0; }
-    }
-
-    .tracks-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.75rem;
-    }
-
-    .track-card {
-      background: rgba(30, 41, 59, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-
-      .track-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-      h2 { font-size: 1.35rem; font-weight: 800; color: #f8fafc; margin: 0 0 0.5rem 0; }
-      .track-desc { font-size: 0.875rem; color: #94a3b8; line-height: 1.5; margin: 0 0 1.25rem 0; }
-
-      .stack-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1.5rem;
-
-        .stack-item {
-          font-size: 0.85rem;
-          color: #cbd5e1;
-          line-height: 1.45;
-
-          strong { color: #38bdf8; display: block; margin-bottom: 0.2rem; font-size: 0.75rem; text-transform: uppercase; }
-        }
-      }
-
-      .btn-track {
-        background: rgba(56, 189, 248, 0.12);
-        color: #38bdf8;
-        border: 1px solid rgba(56, 189, 248, 0.25);
-        padding: 0.65rem 1.25rem;
-        border-radius: 8px;
-        text-align: center;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 0.9rem;
-        transition: all 0.2s;
-
-        &:hover {
-          background: #38bdf8;
-          color: #0f172a;
-        }
-      }
-    }
+    .text-title { color: var(--text-primary); }
+    .bg-subtle { background-color: var(--bg-surface-subtle) !important; }
+    .border-subtle { border-color: var(--border-color) !important; }
+    .text-indigo { color: var(--accent-indigo); }
   `]
 })
 export class SkillGuideComponent implements OnInit {
@@ -205,9 +108,9 @@ export class SkillGuideComponent implements OnInit {
 
   ngOnInit(): void {
     this.seoService.setGeneralSeo(
-      'SIH 2026 Technology Stacks & Departmental Roadmaps',
-      'Explore official engineering and technology roadmaps for ECE, CSE/IT, AI/ML, and Cybersecurity tracks in Smart India Hackathon 2026.',
-      ['SIH Tech Stack', 'ECE Projects', 'Full Stack Hackathon', 'AI ML Models', 'IoT ESP32', 'Robotics ROS2'],
+      'SIH 2026 Technology Roadmaps & Skill Guide',
+      'Technology choices and stack guides for Full Stack Web and AI tracks in Smart India Hackathon 2026.',
+      ['SIH Tech Stack', 'Full Stack Hackathon', 'AI ML Projects'],
       '/skills'
     );
   }
