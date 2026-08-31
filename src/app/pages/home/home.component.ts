@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PsDataService, ScoredProblemStatement } from '../../core/services/ps-data.service';
 import { BookmarkService } from '../../core/services/bookmark.service';
+import { ShareService } from '../../core/services/share.service';
 import { SeoService } from '../../core/services/seo.service';
 import { ProblemStatement } from '../../core/models/problem-statement.model';
 import { PsCardComponent } from '../../shared/components/ps-card/ps-card.component';
@@ -326,6 +327,14 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                           <div class="d-inline-flex align-items-center gap-1">
                             <button 
                               class="btn btn-sm btn-outline-secondary p-1 px-2"
+                              (click)="shareProblem(ps)"
+                              title="Share challenge"
+                              style="font-size: 0.75rem;"
+                            >
+                              <i class="bi bi-share"></i>
+                            </button>
+                            <button 
+                              class="btn btn-sm btn-outline-secondary p-1 px-2"
                               (click)="bookmarkService.toggleBookmark(ps.ps_number)"
                               [title]="bookmarkService.isBookmarked(ps.ps_number) ? 'Remove bookmark' : 'Bookmark'"
                               style="font-size: 0.75rem;"
@@ -417,6 +426,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
 export class HomeComponent implements OnInit {
   psService = inject(PsDataService);
   bookmarkService = inject(BookmarkService);
+  shareService = inject(ShareService);
   private seoService = inject(SeoService);
   private route = inject(ActivatedRoute);
 
@@ -473,6 +483,15 @@ export class HomeComponent implements OnInit {
     const list = this.psService.filteredStatements();
     const start = (this.currentPage() - 1) * this.pageSize;
     return list.slice(start, start + this.pageSize);
+  }
+
+    shareProblem(ps: ProblemStatement): void {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sih2026.gov.in';
+    this.shareService.openShare({
+      title: `${ps.ps_number}: ${ps.title}`,
+      text: `${ps.ps_number} (${ps.category} - ${ps.theme}): ${ps.title}`,
+      url: `${origin}/ps/${ps.ps_number}`
+    });
   }
 
   totalPages(): number {

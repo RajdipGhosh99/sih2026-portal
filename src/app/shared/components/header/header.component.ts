@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { PsDataService } from '../../../core/services/ps-data.service';
 import { BookmarkService } from '../../../core/services/bookmark.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { ShareService } from '../../../core/services/share.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -64,6 +65,16 @@ import { FormsModule } from '@angular/forms';
               </a>
             </nav>
 
+            <!-- Page Share Button -->
+            <button 
+              class="theme-btn" 
+              (click)="shareCurrentPage()"
+              title="Share this page"
+              aria-label="Share page"
+            >
+              <i class="bi bi-share-fill text-primary"></i>
+            </button>
+
             <!-- Theme Switcher -->
             <button 
               class="theme-btn" 
@@ -117,6 +128,9 @@ import { FormsModule } from '@angular/forms';
               <a routerLink="/compare" (click)="mobileMenuOpen.set(false)" class="mobile-nav-item">
                 <i class="bi bi-layout-split me-2"></i> Side-by-Side Comparator
               </a>
+              <button (click)="shareCurrentPage(); mobileMenuOpen.set(false)" class="mobile-nav-item text-start btn btn-link p-2 text-decoration-none">
+                <i class="bi bi-share-fill me-2 text-primary"></i> Share Portal
+              </button>
             </div>
           </div>
         }
@@ -221,6 +235,7 @@ export class HeaderComponent {
   psService = inject(PsDataService);
   bookmarkService = inject(BookmarkService);
   themeService = inject(ThemeService);
+  shareService = inject(ShareService);
   private router = inject(Router);
 
   mobileMenuOpen = signal(false);
@@ -230,5 +245,12 @@ export class HeaderComponent {
     if (q && this.router.url !== '/') {
       this.router.navigate(['/']);
     }
+  }
+
+  shareCurrentPage(): void {
+    this.shareService.openShare({
+      title: 'SIH 2026 Problem Statement Navigator & Solution Architecture Hub',
+      text: 'Explore SIH 2026 problem statements, full-stack architectures, AI models, and presentation pitch decks.'
+    });
   }
 }

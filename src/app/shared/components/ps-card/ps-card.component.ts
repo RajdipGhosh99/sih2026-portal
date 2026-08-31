@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProblemStatement } from '../../../core/models/problem-statement.model';
 import { BookmarkService } from '../../../core/services/bookmark.service';
+import { ShareService } from '../../../core/services/share.service';
 import { TechBadgeComponent } from '../tech-badge/tech-badge.component';
 import { TruncatePipe } from '../../../core/pipes/truncate.pipe';
 import { HighlightPipe } from '../../../core/pipes/highlight.pipe';
@@ -26,8 +27,16 @@ import { HighlightPipe } from '../../../core/pipes/highlight.pipe';
             }
           </div>
 
-          <!-- Bookmark & Compare actions -->
+          <!-- Bookmark, Compare & Share actions -->
           <div class="d-flex align-items-center gap-1">
+            <button 
+              class="action-btn" 
+              (click)="shareProblem(ps)"
+              title="Share challenge"
+              aria-label="Share"
+            >
+              <i class="bi bi-share"></i>
+            </button>
             <button 
               class="action-btn" 
               [class.active]="bookmarkService.isInCompare(ps.ps_number)"
@@ -195,4 +204,14 @@ export class PsCardComponent {
   @Output() openPitch = new EventEmitter<ProblemStatement>();
 
   bookmarkService = inject(BookmarkService);
+  private shareService = inject(ShareService);
+
+  shareProblem(ps: ProblemStatement): void {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sih2026.gov.in';
+    this.shareService.openShare({
+      title: `${ps.ps_number}: ${ps.title}`,
+      text: `${ps.ps_number} (${ps.category} - ${ps.theme}): ${ps.title}`,
+      url: `${origin}/ps/${ps.ps_number}`
+    });
+  }
 }
