@@ -436,12 +436,21 @@ export class HomeComponent implements OnInit {
       '/'
     );
 
+    const initialView = this.route.snapshot.queryParamMap.get('view');
+    if (initialView === 'table') {
+      this.viewMode.set('table');
+    }
+    const initialPersona = this.route.snapshot.queryParamMap.get('persona');
+    if (initialPersona) {
+      this.selectPersona(initialPersona);
+    }
+
     this.route.queryParams.subscribe(params => {
-      if (params['persona']) {
-        this.selectPersona(params['persona']);
+      if (params['persona'] !== undefined) {
+        this.selectPersona(params['persona'] || null);
       }
-      if (params['view'] === 'table') {
-        this.viewMode.set('table');
+      if (params['view']) {
+        this.viewMode.set(params['view'] === 'table' ? 'table' : 'card');
       }
     });
   }
