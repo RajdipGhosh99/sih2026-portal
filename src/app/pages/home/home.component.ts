@@ -29,7 +29,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
   template: `
     <main class="container-xl py-3 py-md-4">
       <!-- Clean Hero Banner -->
-      <section class="card card-evergreen p-3 p-md-4 mb-4">
+      <section class="card card-evergreen p-3 p-md-4 mb-3">
         <div class="row align-items-center g-3">
           <div class="col-lg-9">
             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 mb-2 fw-semibold" style="font-size: 0.75rem;">
@@ -59,10 +59,10 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
       <!-- Step 1: Skill Focus Filter Pills -->
       <section class="mb-3">
         <div class="d-flex align-items-center justify-content-between mb-2">
-          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Select Focus Track:</span>
+          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Filter by Primary Track:</span>
           @if (psService.activePersonaId()) {
             <button class="btn btn-sm btn-link text-decoration-none text-muted p-0" style="font-size: 0.8rem;" (click)="selectPersona(null)">
-              Show All 229
+              Show All 229 Challenges
             </button>
           }
         </div>
@@ -121,7 +121,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                   class="form-control border-start-0 input-evergreen shadow-none" 
                   placeholder="Filter by keyword, ID, ministry, tech..."
                   [ngModel]="psService.filterState().searchQuery"
-                  (ngModelChange)="psService.setSearchQuery($event)"
+                  (ngModelChange)="psService.setSearchQuery($event); currentPage.set(1)"
                 />
               </div>
             </div>
@@ -131,7 +131,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().category"
-                (ngModelChange)="psService.setCategory($event)"
+                (ngModelChange)="psService.setCategory($event); currentPage.set(1)"
               >
                 <option value="All">All Categories</option>
                 <option value="Software">Software Only</option>
@@ -144,7 +144,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().theme"
-                (ngModelChange)="psService.setTheme($event)"
+                (ngModelChange)="psService.setTheme($event); currentPage.set(1)"
               >
                 <option value="All">All Themes ({{ themes.length }})</option>
                 @for (theme of themes; track theme) {
@@ -154,7 +154,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
             </div>
 
             <!-- Sort By -->
-            <div class="col-7 col-md-2">
+            <div class="col-6 col-md-2">
               <select 
                 class="form-select form-select-sm select-evergreen"
                 [ngModel]="psService.filterState().sortBy"
@@ -171,7 +171,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
             </div>
 
             <!-- Card View vs Table View Toggle Group -->
-            <div class="col-5 col-md-2 text-end">
+            <div class="col-6 col-md-2 text-end">
               <div class="view-mode-group">
                 <button 
                   type="button" 
@@ -201,7 +201,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
         </div>
       </section>
 
-      <!-- Top 10 Spotlight (When Track Selected) -->
+      <!-- Top 10 Spotlight (When Track Selected & Card View) -->
       @if (psService.activePersonaId() && viewMode() === 'card') {
         <section class="mb-4">
           <div class="d-flex align-items-center gap-2 mb-3">
@@ -225,13 +225,27 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
 
       <!-- Main Directory Section -->
       <section>
-        <div class="d-flex align-items-center justify-content-between mb-2">
+        <!-- Results count & Page size selector -->
+        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
           <span class="text-muted small">
-            Showing <strong>{{ psService.filteredStatements().length }}</strong> challenges
-            @if (viewMode() === 'table') {
-              <span>• Table Mode (Click headers to sort)</span>
-            }
+            Showing <strong>{{ getShowingRange() }}</strong> of <strong>{{ psService.filteredStatements().length }}</strong> challenges
           </span>
+
+          <div class="d-flex align-items-center gap-2">
+            <label class="text-muted small d-none d-sm-inline">Per Page:</label>
+            <select 
+              class="form-select form-select-sm select-evergreen py-0 px-2" 
+              style="width: auto; height: 28px; font-size: 0.8rem;"
+              [ngModel]="pageSize()"
+              (ngModelChange)="onPageSizeChange($event)"
+            >
+              <option [value]="12">12 per page</option>
+              <option [value]="25">25 per page</option>
+              <option [value]="50">50 per page</option>
+              <option [value]="100">100 per page</option>
+              <option [value]="229">Show All (229)</option>
+            </select>
+          </div>
         </div>
 
         @if (psService.filteredStatements().length > 0) {
@@ -250,68 +264,74 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
             </div>
           }
 
-          <!-- 2. TABLE VIEW -->
+          <!-- 2. OPTIMIZED TABLE VIEW -->
           @if (viewMode() === 'table') {
             <div class="table-evergreen-wrapper">
-              <div class="table-responsive">
+              <div class="table-scroll-container">
                 <table class="table-evergreen align-middle">
                   <thead>
                     <tr>
-                      <th style="cursor: pointer;" (click)="setSort('psNumber')">
-                        PS ID <i class="bi" [ngClass]="psService.filterState().sortBy === 'psNumber' ? 'bi-sort-down-alt text-primary' : 'bi-arrow-down-up'"></i>
+                      <th class="sortable col-ps-id" [class.sorted-active]="psService.filterState().sortBy === 'psNumber'" (click)="setSort('psNumber')">
+                        PS ID <i class="bi" [ngClass]="psService.filterState().sortBy === 'psNumber' ? 'bi-arrow-down-short' : 'bi-arrow-down-up opacity-50'"></i>
                       </th>
-                      <th style="cursor: pointer; min-width: 260px;" (click)="setSort('title')">
-                        Challenge Title <i class="bi" [ngClass]="psService.filterState().sortBy === 'title' ? 'bi-sort-down-alt text-primary' : 'bi-arrow-down-up'"></i>
+                      <th class="sortable col-title" [class.sorted-active]="psService.filterState().sortBy === 'title'" (click)="setSort('title')">
+                        Challenge Title <i class="bi" [ngClass]="psService.filterState().sortBy === 'title' ? 'bi-arrow-down-short' : 'bi-arrow-down-up opacity-50'"></i>
                       </th>
-                      <th style="cursor: pointer;" (click)="setSort('category')">
-                        Category <i class="bi" [ngClass]="psService.filterState().sortBy === 'category' ? 'bi-sort-down-alt text-primary' : 'bi-arrow-down-up'"></i>
+                      <th class="sortable col-category" [class.sorted-active]="psService.filterState().sortBy === 'category'" (click)="setSort('category')">
+                        Category <i class="bi" [ngClass]="psService.filterState().sortBy === 'category' ? 'bi-arrow-down-short' : 'bi-arrow-down-up opacity-50'"></i>
                       </th>
-                      <th style="cursor: pointer;" (click)="setSort('theme')">
-                        Theme <i class="bi" [ngClass]="psService.filterState().sortBy === 'theme' ? 'bi-sort-down-alt text-primary' : 'bi-arrow-down-up'"></i>
+                      <th class="sortable col-theme" [class.sorted-active]="psService.filterState().sortBy === 'theme'" (click)="setSort('theme')">
+                        Theme <i class="bi" [ngClass]="psService.filterState().sortBy === 'theme' ? 'bi-arrow-down-short' : 'bi-arrow-down-up opacity-50'"></i>
                       </th>
-                      <th style="cursor: pointer; min-width: 180px;" (click)="setSort('ministry')">
-                        Ministry / Agency <i class="bi" [ngClass]="psService.filterState().sortBy === 'ministry' ? 'bi-sort-down-alt text-primary' : 'bi-arrow-down-up'"></i>
+                      <th class="sortable col-ministry" [class.sorted-active]="psService.filterState().sortBy === 'ministry'" (click)="setSort('ministry')">
+                        Organization / Ministry <i class="bi" [ngClass]="psService.filterState().sortBy === 'ministry' ? 'bi-arrow-down-short' : 'bi-arrow-down-up opacity-50'"></i>
                       </th>
-                      <th style="min-width: 180px;">Key Technologies</th>
-                      <th style="text-align: right; min-width: 140px;">Actions</th>
+                      <th class="col-skills">Core Technologies</th>
+                      <th class="col-actions" style="text-align: right;">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     @for (ps of paginatedStatements(); track ps.ps_number) {
                       <tr>
                         <!-- PS Number -->
-                        <td>
-                          <span class="ps-number-pill">{{ ps.ps_number }}</span>
-                          @if (ps.rank && ps.rank <= 10) {
-                            <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">#{{ ps.rank }}</span>
-                          }
+                        <td class="col-ps-id">
+                          <div class="d-flex align-items-center gap-1">
+                            <span class="ps-number-pill">{{ ps.ps_number }}</span>
+                            @if (ps.rank && ps.rank <= 10) {
+                              <span class="badge bg-warning text-dark fw-bold" style="font-size: 0.65rem;">#{{ ps.rank }}</span>
+                            }
+                          </div>
                         </td>
 
                         <!-- Title -->
-                        <td>
-                          <a [routerLink]="['/ps', ps.ps_number]" class="text-main fw-semibold text-decoration-none table-title-link" [innerHTML]="ps.title | highlight:psService.filterState().searchQuery"></a>
-                          <div class="text-muted small d-md-none mt-1">{{ ps.org | truncate:30 }}</div>
+                        <td class="col-title">
+                          <a [routerLink]="['/ps', ps.ps_number]" class="text-main fw-semibold text-decoration-none table-title-link d-block" [innerHTML]="ps.title | highlight:psService.filterState().searchQuery"></a>
+                          <div class="text-muted small mt-1 d-md-none">{{ ps.org | truncate:32 }}</div>
                         </td>
 
                         <!-- Category -->
-                        <td>
+                        <td class="col-category">
                           <span class="badge" [ngClass]="ps.category === 'Hardware' ? 'bg-warning text-dark' : 'bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25'" style="font-size: 0.725rem;">
                             {{ ps.category }}
                           </span>
                         </td>
 
                         <!-- Theme -->
-                        <td class="small text-muted">
-                          {{ ps.theme }}
+                        <td class="col-theme small text-muted">
+                          <span class="d-inline-block text-truncate" style="max-width: 150px;" title="{{ ps.theme }}">
+                            {{ ps.theme }}
+                          </span>
                         </td>
 
                         <!-- Ministry -->
-                        <td class="small text-muted" title="{{ ps.org }}">
-                          {{ ps.org | truncate:32 }}
+                        <td class="col-ministry small text-muted">
+                          <span class="d-inline-block text-truncate" style="max-width: 170px;" title="{{ ps.org }}">
+                            {{ ps.org }}
+                          </span>
                         </td>
 
                         <!-- Tech Stack Tags -->
-                        <td>
+                        <td class="col-skills">
                           <div class="d-flex flex-wrap gap-1">
                             @for (tech of ps.skills.slice(0, 3); track tech) {
                               <app-tech-badge [tech]="tech"></app-tech-badge>
@@ -323,7 +343,7 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
                         </td>
 
                         <!-- Actions -->
-                        <td style="text-align: right;">
+                        <td class="col-actions" style="text-align: right;">
                           <div class="d-inline-flex align-items-center gap-1">
                             <button 
                               class="btn btn-sm btn-outline-secondary p-1 px-2"
@@ -418,9 +438,22 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
       border-radius: 4px;
     }
 
-    .table-title-link:hover {
-      color: var(--primary) !important;
+    .table-title-link {
+      line-height: 1.4;
+      &:hover {
+        color: var(--primary) !important;
+        text-decoration: underline;
+      }
     }
+
+    /* Column Widths */
+    .col-ps-id { width: 115px; min-width: 115px; }
+    .col-title { min-width: 260px; }
+    .col-category { width: 95px; min-width: 95px; }
+    .col-theme { width: 150px; min-width: 150px; }
+    .col-ministry { width: 170px; min-width: 170px; }
+    .col-skills { width: 190px; min-width: 190px; }
+    .col-actions { width: 135px; min-width: 135px; }
   `]
 })
 export class HomeComponent implements OnInit {
@@ -436,7 +469,7 @@ export class HomeComponent implements OnInit {
 
   viewMode = signal<'card' | 'table'>('card');
   currentPage = signal(1);
-  pageSize = 12;
+  pageSize = signal(12);
 
   ngOnInit(): void {
     this.seoService.setGeneralSeo(
@@ -474,18 +507,20 @@ export class HomeComponent implements OnInit {
     this.psService.setSortBy(field);
   }
 
-  getActivePersonaTitle(): string {
-    const active = this.psService.personas.find(p => p.id === this.psService.activePersonaId());
-    return active ? active.name : 'Selected Track';
+  onPageSizeChange(newSize: number): void {
+    this.pageSize.set(Number(newSize));
+    this.currentPage.set(1);
   }
 
-  paginatedStatements(): ScoredProblemStatement[] {
-    const list = this.psService.filteredStatements();
-    const start = (this.currentPage() - 1) * this.pageSize;
-    return list.slice(start, start + this.pageSize);
+  getShowingRange(): string {
+    const total = this.psService.filteredStatements().length;
+    if (total === 0) return '0';
+    const start = (this.currentPage() - 1) * this.pageSize() + 1;
+    const end = Math.min(start + this.pageSize() - 1, total);
+    return `${start}–${end}`;
   }
 
-    shareProblem(ps: ProblemStatement): void {
+  shareProblem(ps: ProblemStatement): void {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sih2026.gov.in';
     this.shareService.openShare({
       title: `${ps.ps_number}: ${ps.title}`,
@@ -494,7 +529,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  getActivePersonaTitle(): string {
+    const active = this.psService.personas.find(p => p.id === this.psService.activePersonaId());
+    return active ? active.name : 'Selected Track';
+  }
+
+  paginatedStatements(): ScoredProblemStatement[] {
+    const list = this.psService.filteredStatements();
+    const size = this.pageSize();
+    const start = (this.currentPage() - 1) * size;
+    return list.slice(start, start + size);
+  }
+
   totalPages(): number {
-    return Math.ceil(this.psService.filteredStatements().length / this.pageSize) || 1;
+    return Math.ceil(this.psService.filteredStatements().length / this.pageSize()) || 1;
   }
 }

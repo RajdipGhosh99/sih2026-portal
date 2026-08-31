@@ -223,47 +223,78 @@ code, pre, kbd {
   font-weight: 600;
 }
 
-/* Evergreen Responsive Table */
+/* Evergreen Responsive Table & Optimized Table View */
 .table-evergreen-wrapper {
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: var(--card-shadow);
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-scroll-container {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: 70vh;
 }
 
 .table-evergreen {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   color: var(--text-main);
   margin-bottom: 0;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
 
   thead th {
-    background-color: var(--table-head-bg);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: var(--table-head-bg) !important;
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.775rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
+    padding: 0.65rem 0.85rem;
+    border-bottom: 2px solid var(--border);
     white-space: nowrap;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &.sortable {
+      cursor: pointer;
+      transition: color 0.15s ease, background-color 0.15s ease;
+
+      &:hover {
+        color: var(--text-main);
+        background-color: var(--bg-subtle) !important;
+      }
+    }
+
+    &.sorted-active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
   }
 
   tbody td {
-    padding: 0.85rem 1rem;
+    padding: 0.65rem 0.85rem;
     border-bottom: 1px solid var(--border);
     vertical-align: middle;
     background-color: var(--bg-card);
+    transition: background-color 0.1s ease;
   }
 
-  tbody tr:last-child td {
-    border-bottom: none;
+  tbody tr:nth-child(even) td {
+    background-color: var(--table-stripe-bg);
   }
 
   tbody tr:hover td {
-    background-color: var(--bg-card-hover);
+    background-color: var(--bg-card-hover) !important;
   }
 }
 
