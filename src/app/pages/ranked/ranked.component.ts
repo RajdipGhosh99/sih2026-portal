@@ -16,7 +16,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
         <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-1 rounded-pill mb-2 fw-semibold">
           Curated Web Strategy
         </span>
-        <h1 class="fs-2 fw-bold text-title mb-2">SIH 2026 Ranked Problem Statements</h1>
+        <h1 class="fs-2 fw-bold text-main mb-2">SIH 2026 Ranked Problem Statements</h1>
         <p class="text-secondary small mx-auto" style="max-width: 680px;">
           Architecture and SEO Content Blueprint for Web Portals (Authored by Rajdip Ghosh). Highlights the top 10 candidates best suited for public indexing, two-sided marketplaces, and responsive portals.
         </p>
@@ -24,7 +24,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
 
       <div class="d-flex flex-column gap-3">
         @for (ps of rankedList; track ps.ps_number) {
-          <article class="card human-card p-4">
+          <article class="card card-evergreen p-4">
             <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
               <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-warning text-dark fw-bold px-2 py-1">Rank #{{ ps.rank }}</span>
@@ -36,15 +36,15 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
               </a>
             </div>
 
-            <h2 class="fs-5 fw-bold text-title my-2">
-              <a [routerLink]="['/ps', ps.ps_number]" class="text-decoration-none text-title">{{ ps.title }}</a>
+            <h2 class="fs-5 fw-bold text-main my-2">
+              <a [routerLink]="['/ps', ps.ps_number]" class="text-decoration-none text-main">{{ ps.title }}</a>
             </h2>
 
             <!-- SEO Strategy info -->
             <div class="p-3 bg-subtle rounded-3 border border-subtle my-2 small">
               <div class="mb-1">
                 <span class="text-muted fw-bold">Suggested SEO H1:</span>
-                <strong class="text-title ms-1">{{ ps.seo.suggestedH1 }}</strong>
+                <strong class="text-main ms-1">{{ ps.seo.suggestedH1 }}</strong>
               </div>
               <div class="text-secondary">
                 <span class="text-muted fw-bold">Meta Description:</span>
@@ -70,7 +70,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
     </div>
   `,
   styles: [`
-    .text-title { color: var(--text-primary); }
+    .text-main { color: var(--text-primary); }
     .bg-subtle { background-color: var(--bg-surface-subtle) !important; }
     .border-subtle { border-color: var(--border-color) !important; }
   `]

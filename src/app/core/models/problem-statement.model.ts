@@ -116,5 +116,5 @@ export interface FilterState {
   ministry: string;
   selectedSkills: string[];
   hasDatasetOnly: boolean;
-  sortBy: 'relevance' | 'psNumber' | 'rank' | 'title' | 'ideas';
+  sortBy: 'relevance' | 'psNumber' | 'rank' | 'title' | 'ideas' | 'ministry' | 'category' | 'theme';
 }

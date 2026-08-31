@@ -1,17 +1,18 @@
-/* Evergreen Bootstrap 5 & Icons */
+/* Bootstrap 5 & Bootstrap Icons */
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 /* =========================================================
-   EVERGREEN THEME VARIABLES (LIGHT & DARK)
+   EVERGREEN THEME SYSTEM: LIGHT & DARK PALETTES
    ========================================================= */
 
 :root, [data-theme="light"], [data-bs-theme="light"], .theme-light {
   --bg-app: #f8fafc;
   --bg-card: #ffffff;
-  --bg-card-elevated: #ffffff;
+  --bg-card-hover: #f1f5f9;
   --bg-subtle: #f1f5f9;
+  --bg-input: #ffffff;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
   --text-main: #0f172a;
@@ -20,20 +21,25 @@
   --primary: #0284c7;
   --primary-hover: #0369a1;
   --primary-subtle: #e0f2fe;
+  --primary-text: #0369a1;
   --accent-green: #059669;
   --accent-amber: #d97706;
   --accent-indigo: #4f46e5;
   --accent-red: #dc2626;
-  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 8px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --navbar-bg: #ffffff;
+  --table-head-bg: #f8fafc;
+  --table-stripe-bg: #f8fafc;
+  --modal-overlay: rgba(15, 23, 42, 0.6);
 }
 
 [data-theme="dark"], [data-bs-theme="dark"], .theme-dark {
   --bg-app: #0b1120;
   --bg-card: #131d33;
-  --bg-card-elevated: #1e293b;
+  --bg-card-hover: #1a2540;
   --bg-subtle: #1a243b;
+  --bg-input: #0f172a;
   --border: #243049;
   --border-strong: #334155;
   --text-main: #f8fafc;
@@ -42,6 +48,7 @@
   --primary: #38bdf8;
   --primary-hover: #7dd3fc;
   --primary-subtle: rgba(56, 189, 248, 0.12);
+  --primary-text: #38bdf8;
   --accent-green: #10b981;
   --accent-amber: #f59e0b;
   --accent-indigo: #818cf8;
@@ -49,9 +56,12 @@
   --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
   --card-shadow-hover: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
   --navbar-bg: #0f172a;
+  --table-head-bg: #1a243b;
+  --table-stripe-bg: #111a2e;
+  --modal-overlay: rgba(0, 0, 0, 0.75);
 }
 
-/* Base Document Setup */
+/* Base Body Setup */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -69,48 +79,87 @@ html, body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--primary-hover);
+}
+
 code, pre, kbd {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Evergreen Card Component */
-.card-evergreen {
+/* Evergreen Card */
+.card-evergreen, .human-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: var(--card-shadow);
+  color: var(--text-main);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.card-evergreen:hover {
+.card-evergreen:hover, .human-card:hover {
   border-color: var(--border-strong);
   box-shadow: var(--card-shadow-hover);
 }
 
-/* Evergreen Search & Input Controls */
-.input-evergreen {
-  background-color: var(--bg-card) !important;
+/* Controls, Inputs & Selects */
+.form-control, .form-select, .input-evergreen, .select-evergreen {
+  background-color: var(--bg-input) !important;
   color: var(--text-main) !important;
   border: 1px solid var(--border) !important;
   border-radius: 6px !important;
   font-size: 0.875rem;
 }
 
-.input-evergreen:focus {
+.form-control:focus, .form-select:focus, .input-evergreen:focus, .select-evergreen:focus {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 2px var(--primary-subtle) !important;
+  outline: none !important;
 }
 
-.select-evergreen {
-  background-color: var(--bg-card) !important;
-  color: var(--text-main) !important;
+.form-select option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.input-group-text {
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-muted) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 6px !important;
-  font-size: 0.875rem;
-  cursor: pointer;
 }
 
-/* Evergreen Filter Buttons */
+/* Evergreen Buttons */
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.btn-outline-secondary {
+  background-color: transparent !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+}
+.btn-outline-secondary:hover {
+  background-color: var(--bg-subtle) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* Filter Pills */
 .pill-filter {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -141,21 +190,119 @@ code, pre, kbd {
   font-weight: 600;
 }
 
-/* Clean highlight */
-mark.highlight-match {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: inherit;
-  padding: 1px 2px;
-  border-radius: 2px;
+/* View Mode Switcher (Grid / Table) */
+.view-mode-group {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.view-mode-btn {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.view-mode-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-subtle);
+}
+
+.view-mode-btn.active {
+  background: var(--primary-subtle);
+  color: var(--primary);
   font-weight: 600;
 }
 
-/* Responsive utilities */
-.horizontal-scroll-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+/* Evergreen Responsive Table */
+.table-evergreen-wrapper {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
 }
-.horizontal-scroll-container::-webkit-scrollbar {
-  display: none;
+
+.table-evergreen {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-main);
+  margin-bottom: 0;
+  font-size: 0.875rem;
+
+  thead th {
+    background-color: var(--table-head-bg);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.775rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    background-color: var(--bg-card);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background-color: var(--bg-card-hover);
+  }
+}
+
+/* Bootstrap Table Support in Light/Dark Mode */
+.table {
+  --bs-table-bg: var(--bg-card) !important;
+  --bs-table-color: var(--text-main) !important;
+  --bs-table-border-color: var(--border) !important;
+  color: var(--text-main) !important;
+}
+
+.table thead th {
+  background-color: var(--table-head-bg) !important;
+  color: var(--text-muted) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.table tbody td {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* Text Utility Classes */
+.text-main, .text-title { color: var(--text-main) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-subtle { color: var(--text-subtle) !important; }
+.bg-subtle { background-color: var(--bg-subtle) !important; }
+.border-subtle { border-color: var(--border) !important; }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
 }

@@ -17,7 +17,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
         <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1 rounded-pill mb-2 fw-semibold">
           Decision Tool
         </span>
-        <h1 class="fs-2 fw-bold text-title mb-2">Problem Statement Comparison</h1>
+        <h1 class="fs-2 fw-bold text-main mb-2">Problem Statement Comparison</h1>
         <p class="text-secondary small">Compare up to 3 challenges side-by-side to evaluate tech stack and team feasibility.</p>
       </header>
 
@@ -27,20 +27,20 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
           <button class="btn btn-sm btn-outline-danger" (click)="clearAll()">Clear Comparison</button>
         </div>
 
-        <div class="card human-card p-0 overflow-hidden">
+        <div class="card card-evergreen p-0 overflow-hidden">
           <div class="table-responsive">
             <table class="table table-bordered mb-0 align-middle">
               <thead>
                 <tr class="bg-subtle">
-                  <th style="width: 200px;" class="text-title">Parameter</th>
+                  <th style="width: 200px;" class="text-main">Parameter</th>
                   @for (item of compareItems; track item.ps_number) {
-                    <th class="text-title">
+                    <th class="text-main">
                       <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="badge bg-primary text-white font-monospace">{{ item.ps_number }}</span>
                         <button class="btn btn-sm btn-link text-muted p-0" (click)="removeItem(item.ps_number)">✕</button>
                       </div>
                       <h6 class="mb-0 fw-bold fs-6">
-                        <a [routerLink]="['/ps', item.ps_number]" class="text-decoration-none text-title">{{ item.title }}</a>
+                        <a [routerLink]="['/ps', item.ps_number]" class="text-decoration-none text-main">{{ item.title }}</a>
                       </h6>
                     </th>
                   }
@@ -104,7 +104,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
       } @else {
         <div class="card p-5 text-center bg-subtle border-subtle">
           <i class="bi bi-layout-split fs-1 text-muted mb-2"></i>
-          <h5 class="fw-bold text-title">Comparison tray is empty</h5>
+          <h5 class="fw-bold text-main">Comparison tray is empty</h5>
           <p class="text-secondary small mb-3">Click the compare icon on any problem statement card to compare.</p>
           <div>
             <a routerLink="/" class="btn btn-sm btn-primary">Browse Challenges</a>
@@ -114,7 +114,7 @@ import { TechBadgeComponent } from '../../shared/components/tech-badge/tech-badg
     </div>
   `,
   styles: [`
-    .text-title { color: var(--text-primary); }
+    .text-main { color: var(--text-primary); }
     .bg-subtle { background-color: var(--bg-surface-subtle) !important; }
     .border-subtle { border-color: var(--border-color) !important; }
   `]

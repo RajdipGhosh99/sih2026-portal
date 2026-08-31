@@ -150,6 +150,15 @@ export class PsDataService {
           return numB - numA;
         });
         break;
+      case 'ministry':
+        list.sort((a, b) => a.org.localeCompare(b.org));
+        break;
+      case 'category':
+        list.sort((a, b) => a.category.localeCompare(b.category));
+        break;
+      case 'theme':
+        list.sort((a, b) => a.theme.localeCompare(b.theme));
+        break;
     }
 
     return list;
