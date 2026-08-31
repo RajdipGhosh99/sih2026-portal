@@ -159,7 +159,14 @@ code, pre, kbd {
   border-color: var(--border-strong) !important;
 }
 
-/* Filter Pills */
+/* Responsive Track Filter Pills */
+.track-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .pill-filter {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -169,26 +176,45 @@ code, pre, kbd {
   padding: 0.4rem 0.85rem;
   border-radius: 20px;
   cursor: pointer;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
   transition: all 0.15s ease;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: center;
+  gap: 0.4rem;
+  flex: 0 1 auto;
+
+  &:hover {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    border-color: var(--border-strong);
+  }
+
+  &.active {
+    background: var(--primary);
+    color: #ffffff !important;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
 }
 
-.pill-filter:hover {
-  background: var(--bg-subtle);
-  color: var(--text-main);
-  border-color: var(--border-strong);
+@media (max-width: 576px) {
+  .track-pills-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .pill-filter {
+    font-size: 0.775rem;
+    padding: 0.45rem 0.65rem;
+    width: 100%;
+    border-radius: 8px;
+  }
 }
 
-.pill-filter.active {
-  background: var(--primary);
-  color: #ffffff !important;
-  border-color: var(--primary);
-  font-weight: 600;
-}
 
 /* View Mode Switcher (Grid / Table) */
 .view-mode-group {

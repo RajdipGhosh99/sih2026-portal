@@ -56,55 +56,56 @@ import { TruncatePipe } from '../../core/pipes/truncate.pipe';
         </div>
       </section>
 
-      <!-- Step 1: Skill Focus Filter Pills -->
+      <!-- Step 1: Responsive Track Filters -->
       <section class="mb-3">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">Filter by Primary Track:</span>
+        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+          <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.75rem;">
+            <i class="bi bi-funnel-fill text-primary me-1"></i> Filter by Primary Track:
+          </span>
           @if (psService.activePersonaId()) {
-            <button class="btn btn-sm btn-link text-decoration-none text-muted p-0" style="font-size: 0.8rem;" (click)="selectPersona(null)">
-              Show All 229 Challenges
+            <button class="btn btn-sm btn-link text-decoration-none text-primary p-0 fw-semibold" style="font-size: 0.8rem;" (click)="selectPersona(null)">
+              ✕ Reset to All Challenges ({{ stats.total }})
             </button>
           }
         </div>
 
-        <div class="horizontal-scroll-container pb-2">
-          <div class="d-flex gap-2">
-            <button 
-              class="pill-filter" 
-              [class.active]="psService.activePersonaId() === null"
-              (click)="selectPersona(null)"
-            >
-              All Tracks ({{ stats.total }})
-            </button>
-            <button 
-              class="pill-filter" 
-              [class.active]="psService.activePersonaId() === 'full-stack'"
-              (click)="selectPersona('full-stack')"
-            >
-              <i class="bi bi-window-stack"></i> Full-Stack Web & Mobile
-            </button>
-            <button 
-              class="pill-filter" 
-              [class.active]="psService.activePersonaId() === 'ai-ml'"
-              (click)="selectPersona('ai-ml')"
-            >
-              <i class="bi bi-cpu"></i> AI & Machine Learning
-            </button>
-            <button 
-              class="pill-filter" 
-              [class.active]="psService.activePersonaId() === 'cybersecurity'"
-              (click)="selectPersona('cybersecurity')"
-            >
-              <i class="bi bi-shield-check"></i> Cybersecurity & Forensics
-            </button>
-            <button 
-              class="pill-filter" 
-              [class.active]="psService.activePersonaId() === 'ece-embedded'"
-              (click)="selectPersona('ece-embedded')"
-            >
-              <i class="bi bi-motherboard"></i> Hardware & Embedded (ECE)
-            </button>
-          </div>
+        <!-- Responsive Fluid Track Pills Grid -->
+        <div class="track-pills-container">
+          <button 
+            class="pill-filter" 
+            [class.active]="psService.activePersonaId() === null"
+            (click)="selectPersona(null)"
+          >
+            <i class="bi bi-collection"></i> All Tracks ({{ stats.total }})
+          </button>
+          <button 
+            class="pill-filter" 
+            [class.active]="psService.activePersonaId() === 'full-stack'"
+            (click)="selectPersona('full-stack')"
+          >
+            <i class="bi bi-window-stack"></i> Full-Stack Web & Mobile
+          </button>
+          <button 
+            class="pill-filter" 
+            [class.active]="psService.activePersonaId() === 'ai-ml'"
+            (click)="selectPersona('ai-ml')"
+          >
+            <i class="bi bi-cpu"></i> AI & Machine Learning
+          </button>
+          <button 
+            class="pill-filter" 
+            [class.active]="psService.activePersonaId() === 'cybersecurity'"
+            (click)="selectPersona('cybersecurity')"
+          >
+            <i class="bi bi-shield-check"></i> Cybersecurity & Forensics
+          </button>
+          <button 
+            class="pill-filter" 
+            [class.active]="psService.activePersonaId() === 'ece-embedded'"
+            (click)="selectPersona('ece-embedded')"
+          >
+            <i class="bi bi-motherboard"></i> Hardware & Embedded (ECE)
+          </button>
         </div>
 
         <!-- Filter, Sort & View Controls Bar -->
