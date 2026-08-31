@@ -572,6 +572,7 @@ export class HomeComponent implements OnInit {
 
   onSortChange(sort: any): void {
     this.psService.setSortBy(sort);
+    this.currentPage.set(1);
     this.updateQueryParams();
   }
 
@@ -581,7 +582,14 @@ export class HomeComponent implements OnInit {
   }
 
   setSort(field: any): void {
-    this.psService.setSortBy(field);
+    // If clicking same field, toggle between asc and desc if applicable
+    if (field === 'difficulty') {
+      const current = this.psService.filterState().sortBy;
+      this.psService.setSortBy(current === 'difficulty-asc' ? 'difficulty-desc' : 'difficulty-asc');
+    } else {
+      this.psService.setSortBy(field);
+    }
+    this.currentPage.set(1);
     this.updateQueryParams();
   }
 
